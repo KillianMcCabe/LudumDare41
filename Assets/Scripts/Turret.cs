@@ -13,6 +13,8 @@ public class Turret : MonoBehaviour {
 
 	public GameObject gun;
 	public GameObject gunEffect;
+	public Transform bowSlot;
+	public Transform flowerSlot;
 
 	// Use this for initialization
 	void Start () {
@@ -64,6 +66,15 @@ public class Turret : MonoBehaviour {
 			}
 		} else {
 			FindClosestTargetWithinRange();
+		}
+	}
+
+	public void AddAccessory(GameObject accessory) {
+		GameObject go = Instantiate(accessory);
+		if (accessory.name.StartsWith("Bow")) {
+			go.transform.SetParent(bowSlot.transform, false);
+		} else {
+			go.transform.SetParent(flowerSlot.transform, false);
 		}
 	}
 
