@@ -8,12 +8,13 @@ public class Bomb : MonoBehaviour {
 	Rigidbody rb;
 
 	float jumpRate = 3; // lower is faster
-	float jumpStrength = 4;
+	float jumpStrength = 5;
 	float jumpHeight = 1.5f;
 	float turnSpeed = 40;
 
 	float distToGround = 0;
 	float timeSinceJumped = 0;
+	float damage = 40;
 
 	float health = 100;
 	public bool isAlive = true;
@@ -44,7 +45,7 @@ public class Bomb : MonoBehaviour {
 		health -= dmg;
 		if (health < 0) {
 			isAlive = false;
-			GameController.instance.EnemyCount --;
+			GameController.instance.EnemyCount--;
 			Destroy(gameObject);
 			return true;
 		}
@@ -80,8 +81,15 @@ public class Bomb : MonoBehaviour {
 	void OnCollisionEnter(Collision other)
 	{
 		if (other.gameObject.tag == "Friendly") {
+			Turret t = other.gameObject.GetComponent<Turret>();
+			if (t != null) {
+				t.health -= damage;
+			} else {
+				Debug.LogWarning("Bomb exploded on something that wasn't a turret??..");
+			}
 			Instantiate(explosionPrefab, transform.position, Quaternion.identity);
 			Destroy(gameObject);
+			GameController.instance.EnemyCount--;
 		}
 	}
 

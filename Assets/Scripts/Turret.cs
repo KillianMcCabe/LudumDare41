@@ -5,9 +5,9 @@ using UnityEngine;
 public class Turret : MonoBehaviour {
 
 	float range = 30;
-	float turnSpeed = 40;
-	float gunTurnSpeed = 40;
-	float dps = 40;
+	float turnSpeed = 30;
+	float gunTurnSpeed = 30;
+	float dps = 30;
 
 	Bomb target;
 
@@ -15,6 +15,22 @@ public class Turret : MonoBehaviour {
 	public GameObject gunEffect;
 	public Transform bowSlot;
 	public Transform flowerSlot;
+	public GameObject healthIndicator;
+
+	float maxHealth = 100;
+	float _health = 100;
+	public float health
+	{
+		get { return _health; }
+		set
+		{
+			_health = value;
+			healthIndicator.transform.localScale = new Vector3(_health/maxHealth, 1, 1);
+			if (health < 0) {
+				Destroy(gameObject);
+			}
+		}
+	}
 
 	// Use this for initialization
 	void Start () {
