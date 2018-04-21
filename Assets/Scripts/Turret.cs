@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class Turret : MonoBehaviour {
 
-	float range = 40;
+	float range = 30;
 	float turnSpeed = 40;
 	float gunTurnSpeed = 40;
-	float dps = 50;
+	float dps = 40;
 
 	Bomb target;
 
@@ -40,7 +40,7 @@ public class Turret : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (target != null) {
+		if (target != null && target.isAlive) {
 			// Turn towards target
 			Vector3 towardsTarget = target.transform.position - transform.position;
 			towardsTarget = new Vector3(towardsTarget.x, 0, towardsTarget.z);
@@ -55,16 +55,15 @@ public class Turret : MonoBehaviour {
 
 				if (Vector3.Dot(towardsTarget, transform.forward) > 0.9) {
 					gunEffect.SetActive(true);
-					bool killedIt = target.Damage(dps * Time.deltaTime);
-					if (killedIt) {
-						target = null;
-						gunEffect.SetActive(false);
-					}
+					target.Damage(dps * Time.deltaTime);
 				} else {
 					gunEffect.SetActive(false);
 				}
+			} else {
+				gunEffect.SetActive(false);
 			}
 		} else {
+			gunEffect.SetActive(false);
 			FindClosestTargetWithinRange();
 		}
 	}

@@ -16,6 +16,7 @@ public class Bomb : MonoBehaviour {
 	float timeSinceJumped = 0;
 
 	float health = 100;
+	public bool isAlive = true;
 
 	GameObject explosionPrefab;
 
@@ -35,15 +36,15 @@ public class Bomb : MonoBehaviour {
 			if (dist < closestDist) {
 				target = t.gameObject;
 				closestDist = dist;
-				// print("new closest: " + target.name);
 			}
 		}
 	}
 
-	
 	public bool Damage(float dmg) {
 		health -= dmg;
 		if (health < 0) {
+			isAlive = false;
+			GameController.instance.EnemyCount --;
 			Destroy(gameObject);
 			return true;
 		}
@@ -83,4 +84,5 @@ public class Bomb : MonoBehaviour {
 			Destroy(gameObject);
 		}
 	}
+
 }
