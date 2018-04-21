@@ -15,6 +15,8 @@ public class Bomb : MonoBehaviour {
 	float distToGround = 0;
 	float timeSinceJumped = 0;
 
+	float health = 100;
+
 	GameObject explosionPrefab;
 
 	void Awake() {
@@ -36,6 +38,16 @@ public class Bomb : MonoBehaviour {
 				// print("new closest: " + target.name);
 			}
 		}
+	}
+
+	
+	public bool Damage(float dmg) {
+		health -= dmg;
+		if (health < 0) {
+			Destroy(gameObject);
+			return true;
+		}
+		return false;
 	}
 	
 	// Update is called once per frame

@@ -9,6 +9,8 @@ public class GameController : MonoBehaviour {
 	[System.NonSerialized]
 	public Turret[] turrets;
 
+	// public Bomb[] bombs;
+
 	void Awake() {
 		if (instance == null) {
 			instance = this;
@@ -18,6 +20,7 @@ public class GameController : MonoBehaviour {
 		}
 
 		turrets = GameObject.FindObjectsOfType<Turret>() as Turret[];
+		// bombs = GameObject.FindObjectsOfType<Bomb>() as Bomb[];
 	}
 
 	// Use this for initialization
