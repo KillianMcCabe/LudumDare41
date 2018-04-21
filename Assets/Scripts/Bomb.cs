@@ -15,9 +15,13 @@ public class Bomb : MonoBehaviour {
 	float distToGround = 0;
 	float timeSinceJumped = 0;
 
+	GameObject explosionPrefab;
+
 	void Awake() {
 		rb = GetComponent<Rigidbody>();
 		distToGround = GetComponent<Collider>().bounds.extents.y;
+
+		explosionPrefab = Resources.Load("Prefabs/Boom") as GameObject;
 	}
 
 	// Use this for initialization
@@ -57,5 +61,13 @@ public class Bomb : MonoBehaviour {
 
 	bool IsGrounded() {
 		return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.1f);
+	}
+
+	void OnCollisionEnter(Collision other)
+	{
+		if (other.gameObject.tag == "Friendly") {
+			Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+			Destroy(gameObject);
+		}
 	}
 }
