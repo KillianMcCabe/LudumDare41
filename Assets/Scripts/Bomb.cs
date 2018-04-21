@@ -14,7 +14,7 @@ public class Bomb : MonoBehaviour {
 
 	float distToGround = 0;
 	float timeSinceJumped = 0;
-	float damage = 40;
+	float damage = 30;
 
 	float health = 100;
 	public bool isAlive = true;

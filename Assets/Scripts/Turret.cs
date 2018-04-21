@@ -17,19 +17,32 @@ public class Turret : MonoBehaviour {
 	public Transform flowerSlot;
 	public GameObject healthIndicator;
 
+	GameObject flirtParticleEffect;
+	public bool isFlirtable = false;
+	float timeSinceFlirted = 0;
+	float flirtCD = 10;
+
 	float maxHealth = 100;
 	float _health = 100;
+	float healthGainedFromFlirting = 30f;
+
 	public float health
 	{
 		get { return _health; }
 		set
 		{
 			_health = value;
+			if (_health > maxHealth)
+				_health = maxHealth;
 			healthIndicator.transform.localScale = new Vector3(_health/maxHealth, 1, 1);
-			if (health < 0) {
+			if (_health < 0) {
 				Destroy(gameObject);
 			}
 		}
+	}
+
+	void Awake() {
+		flirtParticleEffect = Resources.Load("Prefabs/FlirtParticleEffect") as GameObject;
 	}
 
 	// Use this for initialization
@@ -82,6 +95,18 @@ public class Turret : MonoBehaviour {
 			gunEffect.SetActive(false);
 			FindClosestTargetWithinRange();
 		}
+
+		timeSinceFlirted += Time.deltaTime;
+		if (timeSinceFlirted > flirtCD) {
+			isFlirtable = true;
+		}
+	}
+
+	public void Flirt() {
+		health += healthGainedFromFlirting;
+		Instantiate(flirtParticleEffect, transform.position, Quaternion.identity);
+		isFlirtable = false;
+		timeSinceFlirted = 0;
 	}
 
 	public void AddAccessory(GameObject accessory) {

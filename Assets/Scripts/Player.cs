@@ -8,7 +8,12 @@ public class Player : MonoBehaviour {
 	CharacterController controller;
 
 	float moveSpeed = 10f;
+    float flirtRange = 8f;
 	Vector3 movement = Vector3.zero;
+
+    public GameObject interactionText;
+
+    private Turret turretInFlirtRange = null;
 
     // Use this for initialization
     void Start () {
@@ -19,6 +24,17 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         HandleMovementInput();
+
+        interactionText.SetActive(false);
+        turretInFlirtRange = null;
+        foreach (Turret t in GameController.instance.turrets) {
+            if (t.isFlirtable && Vector3.Distance(transform.position, t.transform.position) < flirtRange) {
+                turretInFlirtRange = t;
+                interactionText.SetActive(true);
+                break;
+            }
+        }
+
 		HandleActionInputs();
     }
 
@@ -49,10 +65,9 @@ public class Player : MonoBehaviour {
 
     void HandleActionInputs()
     {
-		// flirt
-        if (Input.GetButtonDown("Fire1"))
+        if (turretInFlirtRange != null && Input.GetButtonDown("Interact"))
         {
-			print("flirt");
+			turretInFlirtRange.Flirt();
         }
     }
 }
