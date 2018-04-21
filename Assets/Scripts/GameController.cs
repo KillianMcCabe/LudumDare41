@@ -9,16 +9,20 @@ public class GameController : MonoBehaviour {
 	[System.NonSerialized]
 	public Turret[] turrets;
 
-	// Use this for initialization
-	void Start () {
+	void Awake() {
 		if (instance == null) {
 			instance = this;
 		} else {
 			Destroy(this);
 			return;
 		}
-		
+
 		turrets = GameObject.FindObjectsOfType<Turret>() as Turret[];
+	}
+
+	// Use this for initialization
+	void Start () {
+		
 	}
 	
 	// Update is called once per frame

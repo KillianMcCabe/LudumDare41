@@ -27,18 +27,19 @@ public class Bomb : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		float closestDist = 10000;
+
 		foreach (Turret t in GameController.instance.turrets) {
 			float dist = Vector3.Distance(t.transform.position, transform.position);
 			if (dist < closestDist) {
 				target = t.gameObject;
 				closestDist = dist;
+				// print("new closest: " + target.name);
 			}
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-
 		Vector3 towardsTarget = target.transform.position - transform.position;
 		towardsTarget.Normalize();
 
