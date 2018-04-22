@@ -12,9 +12,11 @@ public class BigBomb : Enemy {
 	float dps = 20;
 
 	Turret eatingTurret = null;
+	bool wasGroundedLastUpdate = false;
 
 	void Start ()  {
-        health = 400;
+		maxHealth = 400;
+		health = 400;
 		// distToGround = GetComponent<Collider>().bounds.extents.y;
     }
 
@@ -23,7 +25,6 @@ public class BigBomb : Enemy {
 
 		if (eatingTurret != null) {
 			if (eatingTurret.isAlive) {
-				print("he eats");
 				eatingTurret.health -= dps * Time.deltaTime;
 			} else {
 				eatingTurret = null;
@@ -38,6 +39,9 @@ public class BigBomb : Enemy {
 
 		// handle movement
 		if (IsGrounded()) {
+			if (!wasGroundedLastUpdate) {
+				rb.velocity = Vector3.zero;
+			}
 			if (Vector3.Dot(transform.forward, towardsTarget) > 0.8) {
 				if (timeSinceJumped > jumpRate) {
 					Vector3 jumpVector = transform.forward + Vector3.up * jumpHeight;
@@ -45,6 +49,9 @@ public class BigBomb : Enemy {
 					timeSinceJumped = 0;
 				}
 			}
+			wasGroundedLastUpdate = true;
+		} else {
+			wasGroundedLastUpdate = false;
 		}
 		transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towardsTarget, Vector3.up), turnSpeed * Time.deltaTime);
 		

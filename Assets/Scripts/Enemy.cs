@@ -11,18 +11,43 @@ public class Enemy : MonoBehaviour {
 	
 	float damage = 30;
 
-	protected float health = 100;
+	protected float _health = 100;
+	protected float maxHealth = 100;
 	public bool isAlive = true;
 
 	float chanceToDropItem = 0.25f;
 
 	GameObject explosionPrefab;
 
+	protected GameObject healthBar;
+	GameObject healthIndicator;
+
+	protected float health
+	{
+		get { return _health; }
+		set
+		{
+			_health = value;
+			if (_health > maxHealth)
+				_health = maxHealth;
+			healthIndicator.transform.localScale = new Vector3(_health/maxHealth, 1, 1);
+			if (_health < 0) {
+				isAlive = false;
+				Destroy(gameObject);
+				GameController.instance.CheckIfGameOver();
+			}
+		}
+	}
+
 	void Awake() {
 		rb = GetComponent<Rigidbody>();
 		distToGround = GetComponent<Collider>().bounds.extents.y;
 
 		explosionPrefab = Resources.Load("Prefabs/Boom") as GameObject;
+
+		healthBar = Instantiate(Resources.Load("Prefabs/HealthBar") as GameObject, Vector3.zero, Quaternion.identity, transform);
+		healthBar.transform.localPosition = new Vector3 (0, 2, 0);
+		healthIndicator = healthBar.transform.Find("Health").gameObject;
 	}
 
 	protected void LocateNewTarget() {

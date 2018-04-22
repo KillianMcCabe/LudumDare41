@@ -6,7 +6,7 @@ public class Item : MonoBehaviour {
 
 	public string label = "";
 	float t = 0;
-	float duration = 16;
+	float duration = 20;
 	bool isHeld = false;
 	GameObject itemGlowEffect;
 

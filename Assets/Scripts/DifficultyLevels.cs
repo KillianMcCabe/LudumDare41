@@ -21,8 +21,7 @@ public class DifficultyLevels {
 		new Wave(12, 2, 0),
 		new Wave(16, 4, 0),
 		new Wave(20, 6, 0),
-		
-		new Wave(10, 4, 1)
+		new Wave(20, 6, 1)
 	};
 
 }

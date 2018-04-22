@@ -7,8 +7,15 @@ public class RollingBomb : Enemy {
     float speed = 2;
 
     void Start ()  {
+		maxHealth = 50;
         health = 50;
     }
+
+	void Update() {
+		base.Update();
+
+		healthBar.transform.position = transform.position + new Vector3 (0, 2, 0);
+	}
 
 	protected override void Move() {
 	
