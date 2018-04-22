@@ -1,0 +1,77 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1529660881664824}
+  m_IsPrefabParent: 1
+--- !u!1 &1529660881664824
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4727312893306888}
+  - component: {fileID: 114971105321611092}
+  m_Layer: 0
+  m_Name: GameController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4727312893306888
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1529660881664824}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114971105321611092
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1529660881664824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23b6d332768354344922d3996406c714, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  accessories:
+  - {fileID: 1115280465554970, guid: e9acb3fa5dcb83b4d9045f297c0a0358, type: 2}
+  - {fileID: 1114737821255554, guid: ee293decbb3b1624dad52fe8c7f30042, type: 2}
+  - {fileID: 1650182989542308, guid: 72bedb48931a056459f1c64c4a451d4c, type: 2}
+  - {fileID: 1204059281538306, guid: d7ffa19881bf50c429523d678f1edca5, type: 2}
+  - {fileID: 1574076405458676, guid: 5e26f1f2d43954e418fc0d29efb49c5d, type: 2}
+  - {fileID: 1760131902012830, guid: 3a0b86f753b847d45854eb56a9f50283, type: 2}
+  - {fileID: 1674230737160686, guid: 73ce6cc03dc36e14abca562eec499914, type: 2}
+  - {fileID: 1250295952683112, guid: 8531bd25269269643b8bae0af35c6862, type: 2}
+  - {fileID: 1726926785700582, guid: 2b901a5090dfab842906bf130363f18b, type: 2}
+  - {fileID: 1887878176902876, guid: e060a757aa4d8764488a0b8db1856041, type: 2}
+  gifts:
+  - {fileID: 114061842385687662, guid: 45f549cf2e469614db26b01cea92d025, type: 2}
+  - {fileID: 114119787220962634, guid: d035f970375d63746b98e42a4795e64a, type: 2}
+  - {fileID: 114788675795799646, guid: 41cc54871ff61fa48b84eecccab0b6bd, type: 2}
+  - {fileID: 114775813224796160, guid: 7e9e8a00272e91a4a89b0e4f3a63231b, type: 2}
+  spawnLocations:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  waveCountText: {fileID: 0}
+  enemyCountText: {fileID: 0}
+  nextWaveIn_Text: {fileID: 0}

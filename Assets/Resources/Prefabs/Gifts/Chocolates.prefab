@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 23334823812606138}
   - component: {fileID: 65623824499641570}
   - component: {fileID: 54501749278303944}
+  - component: {fileID: 114061842385687662}
   m_Layer: 0
   m_Name: Chocolates
   m_TagString: Gift
@@ -111,3 +112,15 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 2, y: 0.3, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114061842385687662
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1970744698869580}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7624b464a33614b8b84abffa28c835, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: Chocolates

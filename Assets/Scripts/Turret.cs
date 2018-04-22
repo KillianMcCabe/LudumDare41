@@ -81,25 +81,27 @@ public class Turret : MonoBehaviour {
         }
 	}
 
-	public void GiveItem(string name) {
-		float multiplier = 1;
-		if (name == likes) {
-			timeSinceFlirted = flirtCD;
+	public void GiveItem(Item item) {
+
+		float multiplier;
+		if (item.label == likes) {
 			multiplier = 1.5f;
 			Instantiate(receivedGoodGiftParticleEffect, transform.position, Quaternion.identity);
-		} else if (name == dislikes) {
-			multiplier = 0.5f;
+		} else if (item.label == dislikes) {
+			multiplier = -0.5f;
 			Instantiate(receivedBadGiftParticleEffect, transform.position, Quaternion.identity);
 		} else {
+			multiplier = 1;
 			Instantiate(receivedGiftParticleEffect, transform.position, Quaternion.identity);
 		}
-		maxHealth += 5 * multiplier;
-		health += 5;
-		healthGainedFromFlirting += 2;
-		range += 4;
-		turnSpeed += 5;
-		gunTurnSpeed += 5;
-		dps += 5;
+
+		maxHealth += Random.Range(1.0f, 4f) * multiplier;
+		health += Random.Range(1f, 4f) * multiplier;
+		healthGainedFromFlirting += Random.Range(1f, 3f) * multiplier;
+		range += Random.Range(1f, 4f) * multiplier;
+		turnSpeed += Random.Range(1f, 4f) * multiplier;
+		gunTurnSpeed += Random.Range(1f, 4f) * multiplier;
+		dps += Random.Range(1f, 4f) * multiplier;
 	}
 
 	// Update is called once per frame
@@ -153,12 +155,12 @@ public class Turret : MonoBehaviour {
 		}
 	}
 
-	public void SetLike(GameObject go) {
-		likes = go.name;
+	public void SetLike(string label) {
+		likes = label;
 	}
 
-	public void SetDislike(GameObject go) {
-		dislikes = go.name;
+	public void SetDislike(string label) {
+		dislikes = label;
 	}
 
 	void LateUpdate()

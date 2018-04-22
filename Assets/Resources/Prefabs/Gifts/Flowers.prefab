@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 95771677182504202}
   - component: {fileID: 65606243546488002}
   - component: {fileID: 54793711386441040}
+  - component: {fileID: 114119787220962634}
   m_Layer: 0
   m_Name: Flowers
   m_TagString: Gift
@@ -129,3 +130,15 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114119787220962634
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1892316767152278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc7624b464a33614b8b84abffa28c835, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  label: Flowers

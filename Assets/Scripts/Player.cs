@@ -107,7 +107,7 @@ public class Player : MonoBehaviour {
         if (turretInInteractionRange != null)
         {
             if (Input.GetButtonDown("Interact") && giftHeld != null) {
-                turretInInteractionRange.GiveItem(giftHeld.name);
+                turretInInteractionRange.GiveItem(giftHeld.GetComponent<Item>());
                 Destroy(giftHeld.gameObject);
                 giftHeld = null;
             }

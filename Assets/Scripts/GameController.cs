@@ -11,10 +11,12 @@ public class GameController : MonoBehaviour {
 	public Turret[] turrets;
 
 	public GameObject[] accessories;
-	public GameObject[] gifts;
+	public Item[] gifts;
 	public Transform[] spawnLocations;
 
+	public Text waveCountText;
 	public Text enemyCountText;
+
 	public Text nextWaveIn_Text;
 
 	[System.NonSerialized]
@@ -67,7 +69,7 @@ public class GameController : MonoBehaviour {
 		// also shuffle gifts
 		for (int t = 0; t < gifts.Length; t++ )
         {
-            GameObject tmp  = gifts[t];
+            Item tmp  = gifts[t];
             int r = Random.Range(t, gifts.Length);
             gifts[t] = gifts[r];
             gifts[r] = tmp;
@@ -79,8 +81,8 @@ public class GameController : MonoBehaviour {
 		}
 
 		for (var i = 0; i < turrets.Length && i < gifts.Length; i++) {
-			turrets[i].SetLike(gifts[i]);
-			turrets[i].SetDislike(gifts[(i+1)%gifts.Length]);
+			turrets[i].SetLike(gifts[i].label);
+			turrets[i].SetDislike(gifts[(i+1)%gifts.Length].label);
 		}
 
 		enemyCount = 0;
@@ -95,6 +97,11 @@ public class GameController : MonoBehaviour {
 
 		currentWave = DifficultyLevels.waves[currentWaveIndex]; // TODO: win condition
 		currentWaveIndex++;
+
+		waveCountText.text = currentWaveIndex.ToString();
+		if (currentWaveIndex >= DifficultyLevels.waves.Length) {
+			waveCountText.text = "FINAL";
+		}
 
 		if (currentWaveIndex != 1) {
 			nextWaveIn_Text.gameObject.SetActive(true);

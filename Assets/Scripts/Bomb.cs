@@ -53,7 +53,7 @@ public class Bomb : MonoBehaviour {
 			isAlive = false;
 			GameController.instance.EnemyCount--;
 			if (Random.Range(0f, 1f) < chanceToDropItem) {
-				GameObject randomGift = GameController.instance.gifts[Random.Range(0, GameController.instance.gifts.Length)];
+				GameObject randomGift = GameController.instance.gifts[Random.Range(0, GameController.instance.gifts.Length)].gameObject;
 				Instantiate(randomGift, transform.position, Random.rotation);
 			}
 			Destroy(gameObject);
