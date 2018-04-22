@@ -5,7 +5,9 @@ using UnityEngine;
 public class Item : MonoBehaviour {
 
 	public string label = "";
-
+	float t = 0;
+	float duration = 16;
+	bool isHeld = false;
 	GameObject itemGlowEffect;
 
 	// Use this for initialization
@@ -13,8 +15,19 @@ public class Item : MonoBehaviour {
 		itemGlowEffect = Instantiate(Resources.Load("Prefabs/ItemGlow")) as GameObject;
 		itemGlowEffect.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
 	}
+
+	void Update() {
+		if (!isHeld) {
+			if (t > duration) {
+				Destroy(itemGlowEffect);
+				Destroy(gameObject);
+			}
+			t += Time.deltaTime;
+		}
+	}
 	
-	public void DisableGlow() {
-		itemGlowEffect.SetActive(false);
+	public void PickedUp() {
+		isHeld = true;
+		Destroy(itemGlowEffect);
 	}
 }

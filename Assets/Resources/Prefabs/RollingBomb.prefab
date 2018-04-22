@@ -23,9 +23,9 @@ GameObject:
   - component: {fileID: 23665482971713652}
   - component: {fileID: 54825035416085944}
   - component: {fileID: 135153767117801204}
-  - component: {fileID: 114938678679700924}
+  - component: {fileID: 114524188735318338}
   m_Layer: 0
-  m_Name: Bomb
+  m_Name: RollingBomb
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -38,7 +38,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1493269539917682}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: -6.26, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -58,7 +58,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: c86f3e85bcbaee8489f13a6fa6e00eb4, type: 3}
+  - {fileID: 2100000, guid: bf87cef01528f5548bbe4f7b6bf41efd, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,9 +98,9 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 112
+  m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &114938678679700924
+--- !u!114 &114524188735318338
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1493269539917682}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 06623c73849108d41b35cb7354748838, type: 3}
+  m_Script: {fileID: 11500000, guid: 8adbd6f528d51e84e90d6c6d7389b247, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isAlive: 1

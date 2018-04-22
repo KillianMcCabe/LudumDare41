@@ -9,7 +9,7 @@ public class Turret : MonoBehaviour {
 	float gunTurnSpeed = 30;
 	float dps = 30;
 
-	Bomb target;
+	Enemy target;
 
 	public GameObject gun;
 	public GameObject gunEffect;
@@ -76,7 +76,7 @@ public class Turret : MonoBehaviour {
 			float dist = Vector3.Distance(transform.position, obj.transform.position);
             if (dist < bestDistance)
             {
-                target = obj.GetComponent<Bomb>();
+                target = obj.GetComponent<Enemy>();
 				bestDistance = dist;
             }
         }
@@ -98,10 +98,10 @@ public class Turret : MonoBehaviour {
 
 		maxHealth += Random.Range(1.0f, 3.5f) * multiplier;
 		health += Random.Range(1f, 3.5f) * multiplier;
-		healthGainedFromFlirting += Random.Range(1f, 3.5f) * multiplier;
+		healthGainedFromFlirting += Random.Range(1f, 2.5f) * multiplier;
 		range += Random.Range(1f, 3.5f) * multiplier;
-		turnSpeed += Random.Range(1f, 3.5f) * multiplier;
-		gunTurnSpeed += Random.Range(1f, 3.5f) * multiplier;
+		turnSpeed += Random.Range(4f, 8f) * multiplier;
+		gunTurnSpeed += Random.Range(4f, 8f) * multiplier;
 		dps += Random.Range(1f, 3.5f) * multiplier;
 	}
 
@@ -122,7 +122,7 @@ public class Turret : MonoBehaviour {
 
 				if (Vector3.Dot(towardsTarget, transform.forward) > 0.9) {
 					gunEffect.SetActive(true);
-					target.Damage(dps * Time.deltaTime);
+					target.TakeDamage(dps * Time.deltaTime);
 				} else {
 					gunEffect.SetActive(false);
 				}

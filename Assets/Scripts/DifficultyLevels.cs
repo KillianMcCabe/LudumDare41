@@ -5,23 +5,24 @@ public class DifficultyLevels {
 
 	public struct Wave {
 
-		public float duration;
 		public int noOfLevel1Enemies;
 		public int noOfLevel2Enemies;
+		public int noOfLevel3Enemies;
 
-		public Wave(float _duration, int _noOfLevel1Enemies, int _noOfLevel2Enemies) {
-			duration = _duration;
+		public Wave(int _noOfLevel1Enemies, int _noOfLevel2Enemies, int _noOfLevel3Enemies) {
 			noOfLevel1Enemies = _noOfLevel1Enemies;
 			noOfLevel2Enemies = _noOfLevel2Enemies;
+			noOfLevel3Enemies = _noOfLevel3Enemies;
 		}
 	}
 
 	public static Wave[] waves = {
-		new Wave(10, 8, 0),
-		new Wave(12, 12, 0),
-		new Wave(14, 16, 0),
-		new Wave(16, 20, 0),
-		new Wave(16, 24, 0)
+		new Wave(8, 0, 0),
+		new Wave(12, 2, 0),
+		new Wave(16, 4, 0),
+		new Wave(20, 6, 0),
+		
+		new Wave(10, 4, 1)
 	};
 
 }

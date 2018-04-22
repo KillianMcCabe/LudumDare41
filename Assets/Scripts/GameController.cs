@@ -22,12 +22,15 @@ public class GameController : MonoBehaviour {
 	public Text nextWaveIn_Text;
 
 	[System.NonSerialized]
-	public int currentWaveIndex = 0;
+	public int currentWaveIndex = 4;
 	public DifficultyLevels.Wave currentWave;
 
 	float timeBetweenWaves = 5;
 	float spawnAreaRadius = 8;
+	
 	GameObject level1Enemy;
+	GameObject level2Enemy;
+	GameObject level3Enemy;
 
 	public bool gameOver = false;
 
@@ -56,6 +59,8 @@ public class GameController : MonoBehaviour {
 		turrets = GameObject.FindObjectsOfType<Turret>() as Turret[];
 
 		level1Enemy = Resources.Load("Prefabs/Bomb") as GameObject;
+		level2Enemy = Resources.Load("Prefabs/RollingBomb") as GameObject;
+		level3Enemy = Resources.Load("Prefabs/BigBomb") as GameObject;
 	}
 
 	// Use this for initialization
@@ -135,13 +140,29 @@ public class GameController : MonoBehaviour {
 		}
 
 		EnemyCount += currentWave.noOfLevel1Enemies;
+		EnemyCount += currentWave.noOfLevel2Enemies;
+		EnemyCount += currentWave.noOfLevel3Enemies;
 
 		for (int i = 0; i < currentWave.noOfLevel1Enemies; i++) {
 			int r = Random.Range(0, spawnLocations.Length);
 			Vector3 pos = spawnLocations[r].position + new Vector3(Random.Range(-spawnAreaRadius, spawnAreaRadius), 0, Random.Range(-spawnAreaRadius, spawnAreaRadius));
 			Instantiate(level1Enemy, pos, Random.rotation);
 
-			yield return new WaitForSeconds(.2f); // wait a small time between each enemy spawn
+			yield return new WaitForSeconds(.25f); // wait a small time between each enemy spawn
+		}
+		for (int i = 0; i < currentWave.noOfLevel2Enemies; i++) {
+			int r = Random.Range(0, spawnLocations.Length);
+			Vector3 pos = spawnLocations[r].position + new Vector3(Random.Range(-spawnAreaRadius, spawnAreaRadius), 0, Random.Range(-spawnAreaRadius, spawnAreaRadius));
+			Instantiate(level2Enemy, pos, Random.rotation);
+
+			yield return new WaitForSeconds(.25f); // wait a small time between each enemy spawn
+		}
+		for (int i = 0; i < currentWave.noOfLevel3Enemies; i++) {
+			int r = Random.Range(0, spawnLocations.Length);
+			Vector3 pos = spawnLocations[r].position + new Vector3(Random.Range(-spawnAreaRadius, spawnAreaRadius), 5, Random.Range(-spawnAreaRadius, spawnAreaRadius));
+			Instantiate(level3Enemy, pos, Random.rotation);
+
+			yield return new WaitForSeconds(.25f); // wait a small time between each enemy spawn
 		}
 	}
 
