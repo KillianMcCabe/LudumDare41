@@ -72,6 +72,7 @@ public class Player : MonoBehaviour {
                 giftRB.useGravity = false;
                 giftRB.isKinematic = false;
                 giftHeld.GetComponent<Collider>().enabled = false;
+                giftHeld.GetComponent<Item>().DisableGlow();
 				break;
             }
         }
