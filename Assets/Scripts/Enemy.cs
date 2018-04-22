@@ -9,13 +9,13 @@ public class Enemy : MonoBehaviour {
 
 	protected float distToGround = 0;
 	
-	float damage = 30;
+	protected float damage = 30;
 
 	protected float _health = 100;
 	protected float maxHealth = 100;
 	public bool isAlive = true;
 
-	float chanceToDropItem = 0.25f;
+	float chanceToDropItem = 0.3f;
 
 	GameObject explosionPrefab;
 

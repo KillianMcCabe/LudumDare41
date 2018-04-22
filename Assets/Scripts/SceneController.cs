@@ -23,6 +23,11 @@ public class SceneController : MonoBehaviour {
 	}
 
 	public void LoadScene(string sceneLabel) {
+		if (sceneLabel == "Game") {
+			Cursor.visible = false;
+		} else {
+			Cursor.visible = true;
+		}
 		StartCoroutine (FadeToScene (sceneLabel));
 	}
 

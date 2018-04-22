@@ -9,6 +9,8 @@ public class RollingBomb : Enemy {
     void Start ()  {
 		maxHealth = 50;
         health = 50;
+
+		damage = 25;
     }
 
 	void Update() {

@@ -21,16 +21,20 @@ public class GameController : MonoBehaviour {
 
 	public Text nextWaveIn_Text;
 
+	public Transform hintTransform;
+
 	[System.NonSerialized]
-	public int currentWaveIndex = 4;
+	public int currentWaveIndex = 0;
 	public DifficultyLevels.Wave currentWave;
 
-	float timeBetweenWaves = 5;
+	float timeBetweenWaves = 6;
 	float spawnAreaRadius = 8;
 	
 	GameObject level1Enemy;
 	GameObject level2Enemy;
 	GameObject level3Enemy;
+
+	GameObject hint;
 
 	public bool gameOver = false;
 
@@ -61,6 +65,8 @@ public class GameController : MonoBehaviour {
 		level1Enemy = Resources.Load("Prefabs/Bomb") as GameObject;
 		level2Enemy = Resources.Load("Prefabs/RollingBomb") as GameObject;
 		level3Enemy = Resources.Load("Prefabs/BigBomb") as GameObject;
+
+		hint = Resources.Load("Prefabs/Hint_Text") as GameObject;
 	}
 
 	// Use this for initialization
@@ -99,6 +105,12 @@ public class GameController : MonoBehaviour {
 		StartCoroutine(SpawnNextWave());
 	}
 	
+	public void DisplayHint(string text) {
+		GameObject go = Instantiate(hint);
+		go.GetComponent<Text>().text = text;
+		go.transform.SetParent(hintTransform, false);
+	}
+
 	public void CheckIfGameOver() {
 		foreach (Turret t in turrets) {
 			if (t.isAlive) {

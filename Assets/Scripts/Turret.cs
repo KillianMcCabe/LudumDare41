@@ -5,8 +5,8 @@ using UnityEngine;
 public class Turret : MonoBehaviour {
 
 	float range = 30;
-	float turnSpeed = 30;
-	float gunTurnSpeed = 30;
+	float turnSpeed = 34;
+	float gunTurnSpeed = 34;
 	float dps = 30;
 
 	Enemy target;
@@ -88,20 +88,22 @@ public class Turret : MonoBehaviour {
 		if (item.label == likes) {
 			multiplier = 1.5f;
 			Instantiate(receivedGoodGiftParticleEffect, transform.position, Quaternion.identity);
+			GameController.instance.DisplayHint("That was the perfect gift for that tower!");
 		} else if (item.label == dislikes) {
 			multiplier = -0.5f;
 			Instantiate(receivedBadGiftParticleEffect, transform.position, Quaternion.identity);
+			GameController.instance.DisplayHint("I don't think that was the right gift for that tower");
 		} else {
 			multiplier = 1;
 			Instantiate(receivedGiftParticleEffect, transform.position, Quaternion.identity);
 		}
 
-		maxHealth += Random.Range(1.0f, 3.5f) * multiplier;
-		health += Random.Range(1f, 3.5f) * multiplier;
-		healthGainedFromFlirting += Random.Range(1f, 2.5f) * multiplier;
-		range += Random.Range(1f, 3.5f) * multiplier;
-		turnSpeed += Random.Range(4f, 8f) * multiplier;
-		gunTurnSpeed += Random.Range(4f, 8f) * multiplier;
+		maxHealth += Random.Range(5.0f, 8.5f) * multiplier;
+		health += Random.Range(8f, 10.5f) * multiplier;
+		healthGainedFromFlirting += Random.Range(5f, 8.5f) * multiplier;
+		range += Random.Range(2f, 3.5f) * multiplier;
+		turnSpeed += Random.Range(6f, 12f) * multiplier;
+		gunTurnSpeed += Random.Range(6f, 12f) * multiplier;
 		dps += Random.Range(1f, 3.5f) * multiplier;
 	}
 

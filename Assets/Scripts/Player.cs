@@ -7,7 +7,7 @@ public class Player : MonoBehaviour {
 	Camera cam;
 	CharacterController controller;
 
-	float moveSpeed = 10f;
+	float moveSpeed = 11.5f;
     float interactionRange = 8f;
     float mass = 3.0f; // defines the character mass
     Vector3 impact = Vector3.zero;
