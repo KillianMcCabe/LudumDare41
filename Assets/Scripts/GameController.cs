@@ -11,6 +11,7 @@ public class GameController : MonoBehaviour {
 	public Turret[] turrets;
 
 	public GameObject[] accessories;
+	public GameObject[] gifts;
 	public Transform[] spawnLocations;
 
 	public Text enemyCountText;
@@ -54,7 +55,7 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		// Knuth shuffle algorithm :: courtesy of Wikipedia :)
+		// Shuffle accessories (Knuth shuffle algorithm)
         for (int t = 0; t < accessories.Length; t++ )
         {
             GameObject tmp  = accessories[t];
@@ -63,9 +64,23 @@ public class GameController : MonoBehaviour {
             accessories[r] = tmp;
         }
 
+		// also shuffle gifts
+		for (int t = 0; t < gifts.Length; t++ )
+        {
+            GameObject tmp  = gifts[t];
+            int r = Random.Range(t, gifts.Length);
+            gifts[t] = gifts[r];
+            gifts[r] = tmp;
+        }
+
 		for (var i =0; i < turrets.Length && i < accessories.Length; i++) {
 			GameObject accessory = accessories[i];
 			turrets[i].AddAccessory(accessory);
+		}
+
+		for (var i = 0; i < turrets.Length && i < gifts.Length; i++) {
+			turrets[i].SetLike(gifts[i]);
+			turrets[i].SetDislike(gifts[(i+1)%gifts.Length]);
 		}
 
 		enemyCount = 0;
@@ -74,14 +89,22 @@ public class GameController : MonoBehaviour {
 	}
 	
 	IEnumerator SpawnNextWave() {
-		currentWave = DifficultyLevels.waves[currentWaveIndex];
+		if (currentWaveIndex >= DifficultyLevels.waves.Length) {
+			yield break; // exit coroutine
+		}
+
+		currentWave = DifficultyLevels.waves[currentWaveIndex]; // TODO: win condition
 		currentWaveIndex++;
 
 		if (currentWaveIndex != 1) {
 			nextWaveIn_Text.gameObject.SetActive(true);
 			float t = 0;
 			while (t < timeBetweenWaves) {
-				nextWaveIn_Text.text = "Next wave begins in " + (timeBetweenWaves-t).ToString("F0") + "..";
+				if (currentWaveIndex >= DifficultyLevels.waves.Length) {
+					nextWaveIn_Text.text = "Final wave begins in " + (timeBetweenWaves-t).ToString("F0") + "..";
+				} else {
+					nextWaveIn_Text.text = "Next wave begins in " + (timeBetweenWaves-t).ToString("F0") + "..";
+				}
 				t += Time.deltaTime;
 				yield return null;
 			}

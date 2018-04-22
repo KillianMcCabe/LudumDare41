@@ -18,6 +18,10 @@ public class Turret : MonoBehaviour {
 	public GameObject healthIndicator;
 
 	GameObject flirtParticleEffect;
+	GameObject receivedGiftParticleEffect;
+	GameObject receivedGoodGiftParticleEffect;
+	GameObject receivedBadGiftParticleEffect;
+
 	public bool isFlirtable = false;
 	float timeSinceFlirted = 0;
 	float flirtCD = 10;
@@ -25,6 +29,10 @@ public class Turret : MonoBehaviour {
 	float maxHealth = 100;
 	float _health = 100;
 	float healthGainedFromFlirting = 30f;
+	public bool isAlive;
+
+	string likes = "";
+	string dislikes = "";
 
 	public float health
 	{
@@ -36,6 +44,7 @@ public class Turret : MonoBehaviour {
 				_health = maxHealth;
 			healthIndicator.transform.localScale = new Vector3(_health/maxHealth, 1, 1);
 			if (_health < 0) {
+				isAlive = false;
 				Destroy(gameObject);
 			}
 		}
@@ -43,6 +52,11 @@ public class Turret : MonoBehaviour {
 
 	void Awake() {
 		flirtParticleEffect = Resources.Load("Prefabs/FlirtParticleEffect") as GameObject;
+		receivedGiftParticleEffect = Resources.Load("Prefabs/ReceivedGiftParticleEffect") as GameObject;
+		receivedGoodGiftParticleEffect = Resources.Load("Prefabs/ReceivedGoodGiftParticleEffect") as GameObject;
+		receivedBadGiftParticleEffect = Resources.Load("Prefabs/ReceivedBadGiftParticleEffect") as GameObject;
+
+		isAlive = true;
 	}
 
 	// Use this for initialization
@@ -65,6 +79,27 @@ public class Turret : MonoBehaviour {
 				bestDistance = dist;
             }
         }
+	}
+
+	public void GiveItem(string name) {
+		float multiplier = 1;
+		if (name == likes) {
+			timeSinceFlirted = flirtCD;
+			multiplier = 1.5f;
+			Instantiate(receivedGoodGiftParticleEffect, transform.position, Quaternion.identity);
+		} else if (name == dislikes) {
+			multiplier = 0.5f;
+			Instantiate(receivedBadGiftParticleEffect, transform.position, Quaternion.identity);
+		} else {
+			Instantiate(receivedGiftParticleEffect, transform.position, Quaternion.identity);
+		}
+		maxHealth += 5 * multiplier;
+		health += 5;
+		healthGainedFromFlirting += 2;
+		range += 4;
+		turnSpeed += 5;
+		gunTurnSpeed += 5;
+		dps += 5;
 	}
 
 	// Update is called once per frame
@@ -116,6 +151,14 @@ public class Turret : MonoBehaviour {
 		} else {
 			go.transform.SetParent(flowerSlot.transform, false);
 		}
+	}
+
+	public void SetLike(GameObject go) {
+		likes = go.name;
+	}
+
+	public void SetDislike(GameObject go) {
+		dislikes = go.name;
 	}
 
 	void LateUpdate()

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Bomb : MonoBehaviour {
 
-	GameObject target;
+	Turret target;
 	Rigidbody rb;
 
 	float jumpRate = 3; // lower is faster
@@ -19,6 +19,8 @@ public class Bomb : MonoBehaviour {
 	float health = 100;
 	public bool isAlive = true;
 
+	float chanceToDropItem = 0.3f;
+
 	GameObject explosionPrefab;
 
 	void Awake() {
@@ -28,17 +30,21 @@ public class Bomb : MonoBehaviour {
 		explosionPrefab = Resources.Load("Prefabs/Boom") as GameObject;
 	}
 
-	// Use this for initialization
-	void Start () {
+	void LocateNewTarget() {
 		float closestDist = 10000;
 
 		foreach (Turret t in GameController.instance.turrets) {
-			float dist = Vector3.Distance(t.transform.position, transform.position);
-			if (dist < closestDist) {
-				target = t.gameObject;
-				closestDist = dist;
+			if (t.isAlive) {
+				float dist = Vector3.Distance(t.transform.position, transform.position);
+				if (dist < closestDist) {
+					target = t.GetComponent<Turret>();
+					closestDist = dist;
+				}
 			}
 		}
+	}
+	// Use this for initialization
+	void Start () {
 	}
 
 	public bool Damage(float dmg) {
@@ -46,6 +52,10 @@ public class Bomb : MonoBehaviour {
 		if (health < 0) {
 			isAlive = false;
 			GameController.instance.EnemyCount--;
+			if (Random.Range(0f, 1f) < chanceToDropItem) {
+				GameObject randomGift = GameController.instance.gifts[Random.Range(0, GameController.instance.gifts.Length)];
+				Instantiate(randomGift, transform.position, Random.rotation);
+			}
 			Destroy(gameObject);
 			return true;
 		}
@@ -54,18 +64,23 @@ public class Bomb : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Vector3 towardsTarget = target.transform.position - transform.position;
-		towardsTarget.Normalize();
+		if (target != null && target.isAlive) {
+			Vector3 towardsTarget = target.transform.position - transform.position;
+			towardsTarget.Normalize();
 
-		// handle movement
-		if (IsGrounded()) {
-			if (timeSinceJumped > jumpRate) {
-				Vector3 jumpVector = transform.forward + Vector3.up * jumpHeight;
-				rb.AddForce(jumpVector * jumpStrength, ForceMode.Impulse);
-				timeSinceJumped = 0;
+			// handle movement
+			if (IsGrounded()) {
+				if (timeSinceJumped > jumpRate) {
+					Vector3 jumpVector = transform.forward + Vector3.up * jumpHeight;
+					rb.AddForce(jumpVector * jumpStrength, ForceMode.Impulse);
+					timeSinceJumped = 0;
+				}
+				transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towardsTarget, Vector3.up), turnSpeed * Time.deltaTime);
 			}
-			transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towardsTarget, Vector3.up), turnSpeed * Time.deltaTime);
+		} else {
+			LocateNewTarget();
 		}
+		
 		timeSinceJumped += Time.deltaTime;
 	}
 
@@ -80,6 +95,9 @@ public class Bomb : MonoBehaviour {
 
 	void OnCollisionEnter(Collision other)
 	{
+		if (!isAlive) {
+			Debug.LogWarning("Collided after death?? GHOST BOMB! =o");
+		}
 		if (other.gameObject.tag == "Friendly") {
 			Turret t = other.gameObject.GetComponent<Turret>();
 			if (t != null) {

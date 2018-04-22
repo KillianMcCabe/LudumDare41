@@ -8,35 +8,74 @@ public class Player : MonoBehaviour {
 	CharacterController controller;
 
 	float moveSpeed = 10f;
-    float flirtRange = 8f;
+    float interactionRange = 8f;
 	Vector3 movement = Vector3.zero;
 
-    public GameObject interactionText;
+    public GameObject flirtText;
+    public GameObject giveGiftText;
 
-    private Turret turretInFlirtRange = null;
+    private Turret turretInInteractionRange = null;
+
+    public Transform giftHoldTransform;
+    GameObject giftHeld = null;
+    float giftPickUpRange = 5;
+
+    Animator animator;
 
     // Use this for initialization
     void Start () {
         cam = Camera.main;
         controller = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
     }
 	
 	// Update is called once per frame
 	void Update () {
+
         HandleMovementInput();
 
-        interactionText.SetActive(false);
-        turretInFlirtRange = null;
+        if (giftHeld == null) {
+            FindClosestGiftWithinRange();
+        }
+
+        flirtText.SetActive(false);
+        giveGiftText.SetActive(false);
+        turretInInteractionRange = null;
         foreach (Turret t in GameController.instance.turrets) {
-            if (t.isFlirtable && Vector3.Distance(transform.position, t.transform.position) < flirtRange) {
-                turretInFlirtRange = t;
-                interactionText.SetActive(true);
+            if (t.isAlive && Vector3.Distance(transform.position, t.transform.position) < interactionRange) {
+                turretInInteractionRange = t;
+                if (t.isFlirtable) {
+                    flirtText.SetActive(true);
+                }
+                if (giftHeld != null) {
+                    giveGiftText.SetActive(true);
+                }
                 break;
             }
         }
 
 		HandleActionInputs();
+        animator.SetBool("itemHeld", giftHeld != null);
     }
+
+    void FindClosestGiftWithinRange() {
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("Gift"); // TODO: optimize
+        foreach (GameObject obj in objs)
+        {
+			float dist = Vector3.Distance(transform.position, obj.transform.position);
+            if (dist < giftPickUpRange)
+            {
+                giftHeld = obj;
+                giftHeld.transform.SetParent(giftHoldTransform, false);
+                giftHeld.transform.localPosition = new Vector3(0, 0, 0);
+                Rigidbody giftRB = giftHeld.GetComponent<Rigidbody>();
+                giftRB.useGravity = false;
+                giftRB.isKinematic = false;
+                giftHeld.GetComponent<Collider>().enabled = false;
+				break;
+            }
+        }
+	}
 
     void HandleMovementInput()
     {
@@ -65,9 +104,16 @@ public class Player : MonoBehaviour {
 
     void HandleActionInputs()
     {
-        if (turretInFlirtRange != null && Input.GetButtonDown("Interact"))
+        if (turretInInteractionRange != null)
         {
-			turretInFlirtRange.Flirt();
+            if (Input.GetButtonDown("Interact") && giftHeld != null) {
+                turretInInteractionRange.GiveItem(giftHeld.name);
+                Destroy(giftHeld.gameObject);
+                giftHeld = null;
+            }
+			if (Input.GetButtonDown("Flirt") && turretInInteractionRange.isFlirtable) {
+                turretInInteractionRange.Flirt();
+            }
         }
     }
 }
