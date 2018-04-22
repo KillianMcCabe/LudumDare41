@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour {
 
 	public Text waveCountText;
 	public Text enemyCountText;
+	public GameObject gameWinScreen;
 	public GameObject gameOverScreen;
 
 	public Text nextWaveIn_Text;
@@ -105,6 +106,8 @@ public class GameController : MonoBehaviour {
 
 	IEnumerator SpawnNextWave() {
 		if (currentWaveIndex >= DifficultyLevels.waves.Length) {
+			gameWinScreen.SetActive(true);
+			// SceneController.instance.LoadScene("Main");
 			yield break; // exit coroutine
 		}
 

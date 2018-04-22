@@ -74,4 +74,7 @@ MonoBehaviour:
   - {fileID: 0}
   waveCountText: {fileID: 0}
   enemyCountText: {fileID: 0}
+  gameWinScreen: {fileID: 0}
+  gameOverScreen: {fileID: 0}
   nextWaveIn_Text: {fileID: 0}
+  gameOver: 0
