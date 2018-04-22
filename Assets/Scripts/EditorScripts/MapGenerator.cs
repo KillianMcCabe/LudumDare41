@@ -6,6 +6,14 @@ public class MapGenerator : MonoBehaviour {
 
 	public GameObject grass;
 
+	[System.Serializable]
+	public struct PropData {
+		public GameObject prefab;
+		public int count;
+	}
+
+	public PropData[] propData;
+
 	int mapWidth = 10;
 	int mapHeight = 10;
 
@@ -28,7 +36,21 @@ public class MapGenerator : MonoBehaviour {
 			}
 		}
 
+		// add props to map
+		foreach (PropData pd in propData) {
+			for (int i = 0; i < pd.count; i++) {
+				Vector3 pos = new Vector3(
+					Random.Range(-((tileSize / 2) * mapWidth) + tileSize / 2, ((tileSize / 2) * mapWidth) - tileSize / 2),
+					0,
+					Random.Range(-((tileSize / 2) * mapHeight) + tileSize / 2, ((tileSize / 2) * mapHeight) - tileSize / 2)
+				);
+				GameObject go = Instantiate(pd.prefab, pos, Quaternion.Euler(0, Random.Range(0, 360f), 0));
+				go.transform.SetParent(mapGO.transform);
+			}
+		}
+
 		// add colliders to edges
+
 		float colliderHeight = 10;
 		var colliderGO1 = new GameObject();
 		colliderGO1.transform.SetParent(mapGO.transform);
