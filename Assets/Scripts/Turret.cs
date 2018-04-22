@@ -46,6 +46,7 @@ public class Turret : MonoBehaviour {
 			if (_health < 0) {
 				isAlive = false;
 				Destroy(gameObject);
+				GameController.instance.CheckIfGameOver();
 			}
 		}
 	}
@@ -95,13 +96,13 @@ public class Turret : MonoBehaviour {
 			Instantiate(receivedGiftParticleEffect, transform.position, Quaternion.identity);
 		}
 
-		maxHealth += Random.Range(1.0f, 4f) * multiplier;
-		health += Random.Range(1f, 4f) * multiplier;
-		healthGainedFromFlirting += Random.Range(1f, 3f) * multiplier;
-		range += Random.Range(1f, 4f) * multiplier;
-		turnSpeed += Random.Range(1f, 4f) * multiplier;
-		gunTurnSpeed += Random.Range(1f, 4f) * multiplier;
-		dps += Random.Range(1f, 4f) * multiplier;
+		maxHealth += Random.Range(1.0f, 3.5f) * multiplier;
+		health += Random.Range(1f, 3.5f) * multiplier;
+		healthGainedFromFlirting += Random.Range(1f, 3.5f) * multiplier;
+		range += Random.Range(1f, 3.5f) * multiplier;
+		turnSpeed += Random.Range(1f, 3.5f) * multiplier;
+		gunTurnSpeed += Random.Range(1f, 3.5f) * multiplier;
+		dps += Random.Range(1f, 3.5f) * multiplier;
 	}
 
 	// Update is called once per frame

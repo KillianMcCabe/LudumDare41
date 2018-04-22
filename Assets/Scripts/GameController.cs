@@ -16,6 +16,7 @@ public class GameController : MonoBehaviour {
 
 	public Text waveCountText;
 	public Text enemyCountText;
+	public GameObject gameOverScreen;
 
 	public Text nextWaveIn_Text;
 
@@ -26,6 +27,8 @@ public class GameController : MonoBehaviour {
 	float timeBetweenWaves = 5;
 	float spawnAreaRadius = 8;
 	GameObject level1Enemy;
+
+	public bool gameOver = false;
 
 	int enemyCount;
 	public int EnemyCount
@@ -90,6 +93,16 @@ public class GameController : MonoBehaviour {
 		StartCoroutine(SpawnNextWave());
 	}
 	
+	public void CheckIfGameOver() {
+		foreach (Turret t in turrets) {
+			if (t.isAlive) {
+				return;
+			}
+		}
+		gameOver = true;
+		gameOverScreen.SetActive(true);
+	}
+
 	IEnumerator SpawnNextWave() {
 		if (currentWaveIndex >= DifficultyLevels.waves.Length) {
 			yield break; // exit coroutine
@@ -131,6 +144,8 @@ public class GameController : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		
+		if (Input.GetButtonDown("Cancel")) {
+			SceneController.instance.LoadScene("Main");
+		}
 	}
 }

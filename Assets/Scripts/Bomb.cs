@@ -19,7 +19,7 @@ public class Bomb : MonoBehaviour {
 	float health = 100;
 	public bool isAlive = true;
 
-	float chanceToDropItem = 0.3f;
+	float chanceToDropItem = 0.25f;
 
 	GameObject explosionPrefab;
 
