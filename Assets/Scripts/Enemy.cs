@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
 public class Enemy : MonoBehaviour {
 
 	protected Turret target;
 	protected Rigidbody rb;
+	NavMeshAgent agent;
 
 	protected float distToGround = 0;
 	
@@ -42,6 +45,7 @@ public class Enemy : MonoBehaviour {
 	void Awake() {
 		rb = GetComponent<Rigidbody>();
 		distToGround = GetComponent<Collider>().bounds.extents.y;
+		agent = GetComponent<NavMeshAgent>();
 
 		explosionPrefab = Resources.Load("Prefabs/Boom") as GameObject;
 
@@ -59,13 +63,19 @@ public class Enemy : MonoBehaviour {
 				if (dist < closestDist) {
 					target = t.GetComponent<Turret>();
 					closestDist = dist;
+
+					if (agent != null) {
+						agent.SetDestination(target.transform.position);
+					} else {
+						Debug.LogError("why is agent null?");
+					}
 				}
 			}
 		}
 	}
 	// Use this for initialization
 	void Start () {
-
+		
 	}
 
 	public bool TakeDamage(float dmg) {
@@ -92,11 +102,17 @@ public class Enemy : MonoBehaviour {
 
 	void FixedUpdate() {	
 		if (target != null && target.isAlive) {
-			Move();
+			// Move(agent.desiredVelocity);
+
+			// Vector3 towardsTarget = target.transform.position - transform.position;
+			// towardsTarget.Normalize();
+
+			// Debug.DrawLine(transform.position, transform.position + towardsTarget, Color.green);
+			// Debug.DrawLine(transform.position, transform.position + agent.desiredVelocity, Color.red);
 		}
 	}
 
-	protected virtual void Move() {
+	protected virtual void Move(Vector3 desiredVelocity) {
 
 	}
 

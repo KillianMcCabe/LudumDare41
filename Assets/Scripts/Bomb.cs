@@ -10,10 +10,12 @@ public class Bomb : Enemy {
 	float timeSinceJumped = 0;
 	float turnSpeed = 40;
 
-	protected override void Move() {
+	protected override void Move(Vector3 desiredVelocity) {
 	
-		Vector3 towardsTarget = target.transform.position - transform.position;
-		towardsTarget.Normalize();
+		// Vector3 towardsTarget = target.transform.position - transform.position;
+		// towardsTarget.Normalize();
+		
+		desiredVelocity.Normalize();
 
 		// handle movement
 		if (IsGrounded()) {
@@ -22,7 +24,7 @@ public class Bomb : Enemy {
 				rb.AddForce(jumpVector * jumpStrength, ForceMode.Impulse);
 				timeSinceJumped = 0;
 			}
-			transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towardsTarget, Vector3.up), turnSpeed * Time.deltaTime);
+			transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(desiredVelocity, Vector3.up), turnSpeed * Time.deltaTime);
 		}
 			
 		timeSinceJumped += Time.deltaTime;

@@ -7,7 +7,8 @@ public class Turret : MonoBehaviour {
 	float range = 30;
 	float turnSpeed = 34;
 	float gunTurnSpeed = 34;
-	float dps = 30;
+	float dps = 0;
+	// float dps = 30;
 
 	Enemy target;
 

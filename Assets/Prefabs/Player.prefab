@@ -19,7 +19,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4022953139874978}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: GiftTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36,7 +36,7 @@ GameObject:
   - component: {fileID: 4026803316609792}
   - component: {fileID: 33316192069248604}
   - component: {fileID: 23077097372746000}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: L_Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -53,7 +53,7 @@ GameObject:
   - component: {fileID: 4642906802268244}
   - component: {fileID: 33889913296693444}
   - component: {fileID: 23742159715072734}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -70,7 +70,7 @@ GameObject:
   - component: {fileID: 4521638446219346}
   - component: {fileID: 33359795555916798}
   - component: {fileID: 23463013982662712}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: R_Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 4066263638305282}
   - component: {fileID: 33436153138271930}
   - component: {fileID: 23759824649809378}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,8 @@ GameObject:
   - component: {fileID: 143457758483366498}
   - component: {fileID: 95493656291814236}
   - component: {fileID: 114624220890105510}
-  m_Layer: 0
+  - component: {fileID: 135685702420830988}
+  m_Layer: 9
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -390,6 +391,18 @@ MonoBehaviour:
   flirtText: {fileID: 0}
   giveGiftText: {fileID: 0}
   giftHoldTransform: {fileID: 4022953139874978}
+--- !u!135 &135685702420830988
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1886542983049624}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 2
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!143 &143457758483366498
 CharacterController:
   m_ObjectHideFlags: 1

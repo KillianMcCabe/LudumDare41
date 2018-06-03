@@ -19,7 +19,7 @@ public class RollingBomb : Enemy {
 		healthBar.transform.position = transform.position + new Vector3 (0, 2, 0);
 	}
 
-	protected override void Move() {
+	protected override void Move(Vector3 desiredVelocity) {
 	
 		Vector3 towardsTarget = target.transform.position - transform.position;
 		towardsTarget.Normalize();

@@ -32,7 +32,7 @@ public class BigBomb : Enemy {
 		}
 	}
 
-	protected override void Move() {
+	protected override void Move(Vector3 desiredVelocity) {
 	
 		Vector3 towardsTarget = target.transform.position - transform.position;
 		towardsTarget.Normalize();
