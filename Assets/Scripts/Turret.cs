@@ -2,174 +2,202 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Turret : MonoBehaviour {
+public class Turret : MonoBehaviour
+{
+    float range = 30;
+    float turnSpeed = 34;
+    float gunTurnSpeed = 34;
+    float dps = 0;
+    // float dps = 30;
 
-	float range = 30;
-	float turnSpeed = 34;
-	float gunTurnSpeed = 34;
-	float dps = 0;
-	// float dps = 30;
+    Enemy target;
 
-	Enemy target;
+    public GameObject gun;
+    public GameObject gunEffect;
+    public Transform bowSlot;
+    public Transform flowerSlot;
+    public GameObject healthIndicator;
 
-	public GameObject gun;
-	public GameObject gunEffect;
-	public Transform bowSlot;
-	public Transform flowerSlot;
-	public GameObject healthIndicator;
+    GameObject flirtParticleEffect;
+    GameObject receivedGiftParticleEffect;
+    GameObject receivedGoodGiftParticleEffect;
+    GameObject receivedBadGiftParticleEffect;
 
-	GameObject flirtParticleEffect;
-	GameObject receivedGiftParticleEffect;
-	GameObject receivedGoodGiftParticleEffect;
-	GameObject receivedBadGiftParticleEffect;
+    public bool isFlirtable = false;
+    float timeSinceFlirted = 0;
+    float flirtCD = 10;
 
-	public bool isFlirtable = false;
-	float timeSinceFlirted = 0;
-	float flirtCD = 10;
+    float maxHealth = 100;
+    float _health = 100;
+    float healthGainedFromFlirting = 30f;
+    public bool isAlive;
 
-	float maxHealth = 100;
-	float _health = 100;
-	float healthGainedFromFlirting = 30f;
-	public bool isAlive;
+    string likes = "";
+    string dislikes = "";
 
-	string likes = "";
-	string dislikes = "";
+    public float health
+    {
+        get { return _health; }
+        set
+        {
+            _health = value;
+            if (_health > maxHealth)
+                _health = maxHealth;
+            healthIndicator.transform.localScale = new Vector3(_health / maxHealth, 1, 1);
+            if (_health < 0)
+            {
+                isAlive = false;
+                Destroy(gameObject);
+                GameController.instance.CheckIfGameOver();
+            }
+        }
+    }
 
-	public float health
-	{
-		get { return _health; }
-		set
-		{
-			_health = value;
-			if (_health > maxHealth)
-				_health = maxHealth;
-			healthIndicator.transform.localScale = new Vector3(_health/maxHealth, 1, 1);
-			if (_health < 0) {
-				isAlive = false;
-				Destroy(gameObject);
-				GameController.instance.CheckIfGameOver();
-			}
-		}
-	}
+    void Awake()
+    {
+        flirtParticleEffect = Resources.Load("Prefabs/FlirtParticleEffect") as GameObject;
+        receivedGiftParticleEffect = Resources.Load("Prefabs/ReceivedGiftParticleEffect") as GameObject;
+        receivedGoodGiftParticleEffect = Resources.Load("Prefabs/ReceivedGoodGiftParticleEffect") as GameObject;
+        receivedBadGiftParticleEffect = Resources.Load("Prefabs/ReceivedBadGiftParticleEffect") as GameObject;
 
-	void Awake() {
-		flirtParticleEffect = Resources.Load("Prefabs/FlirtParticleEffect") as GameObject;
-		receivedGiftParticleEffect = Resources.Load("Prefabs/ReceivedGiftParticleEffect") as GameObject;
-		receivedGoodGiftParticleEffect = Resources.Load("Prefabs/ReceivedGoodGiftParticleEffect") as GameObject;
-		receivedBadGiftParticleEffect = Resources.Load("Prefabs/ReceivedBadGiftParticleEffect") as GameObject;
+        isAlive = true;
+    }
 
-		isAlive = true;
-	}
+    // Use this for initialization
+    void Start()
+    {
+        FindClosestTargetWithinRange();
+        gunEffect.SetActive(false);
+    }
 
-	// Use this for initialization
-	void Start () {
-		FindClosestTargetWithinRange();
-		gunEffect.SetActive(false);
-	}
-	
-	void FindClosestTargetWithinRange() { // TODO: optimize
+    void FindClosestTargetWithinRange()
+    { // TODO: optimize
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Enemy");
 
-		float bestDistance = range;
-		target = null;
+        float bestDistance = range;
+        target = null;
         foreach (GameObject obj in objs)
         {
-			float dist = Vector3.Distance(transform.position, obj.transform.position);
+            float dist = Vector3.Distance(transform.position, obj.transform.position);
             if (dist < bestDistance)
             {
                 target = obj.GetComponent<Enemy>();
-				bestDistance = dist;
+                bestDistance = dist;
             }
         }
-	}
+    }
 
-	public void GiveItem(Item item) {
+    public void GiveItem(Item item)
+    {
 
-		float multiplier;
-		if (item.label == likes) {
-			multiplier = 1.5f;
-			Instantiate(receivedGoodGiftParticleEffect, transform.position, Quaternion.identity);
-			GameController.instance.DisplayHint("That was the perfect gift for that tower!");
-		} else if (item.label == dislikes) {
-			multiplier = -0.5f;
-			Instantiate(receivedBadGiftParticleEffect, transform.position, Quaternion.identity);
-			GameController.instance.DisplayHint("I don't think that was the right gift for that tower");
-		} else {
-			multiplier = 1;
-			Instantiate(receivedGiftParticleEffect, transform.position, Quaternion.identity);
-		}
+        float multiplier;
+        if (item.label == likes)
+        {
+            multiplier = 1.5f;
+            Instantiate(receivedGoodGiftParticleEffect, transform.position, Quaternion.identity);
+            GameController.instance.DisplayHint("That was the perfect gift for that tower!");
+        }
+        else if (item.label == dislikes)
+        {
+            multiplier = -0.5f;
+            Instantiate(receivedBadGiftParticleEffect, transform.position, Quaternion.identity);
+            GameController.instance.DisplayHint("I don't think that was the right gift for that tower");
+        }
+        else
+        {
+            multiplier = 1;
+            Instantiate(receivedGiftParticleEffect, transform.position, Quaternion.identity);
+        }
 
-		maxHealth += Random.Range(5.0f, 8.5f) * multiplier;
-		health += Random.Range(8f, 10.5f) * multiplier;
-		healthGainedFromFlirting += Random.Range(5f, 8.5f) * multiplier;
-		range += Random.Range(2f, 3.5f) * multiplier;
-		turnSpeed += Random.Range(6f, 12f) * multiplier;
-		gunTurnSpeed += Random.Range(6f, 12f) * multiplier;
-		dps += Random.Range(1f, 3.5f) * multiplier;
-	}
+        maxHealth += Random.Range(5.0f, 8.5f) * multiplier;
+        health += Random.Range(8f, 10.5f) * multiplier;
+        healthGainedFromFlirting += Random.Range(5f, 8.5f) * multiplier;
+        range += Random.Range(2f, 3.5f) * multiplier;
+        turnSpeed += Random.Range(6f, 12f) * multiplier;
+        gunTurnSpeed += Random.Range(6f, 12f) * multiplier;
+        dps += Random.Range(1f, 3.5f) * multiplier;
+    }
 
-	// Update is called once per frame
-	void Update () {
-		if (target != null && target.isAlive) {
-			// Turn towards target
-			Vector3 towardsTarget = target.transform.position - transform.position;
-			towardsTarget = new Vector3(towardsTarget.x, 0, towardsTarget.z);
-			towardsTarget.Normalize();
-			transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towardsTarget, Vector3.up), turnSpeed * Time.deltaTime);
+    // Update is called once per frame
+    void Update()
+    {
+        if (target != null && target.isAlive)
+        {
+            // Turn towards target
+            Vector3 towardsTarget = target.transform.position - transform.position;
+            towardsTarget = new Vector3(towardsTarget.x, 0, towardsTarget.z);
+            towardsTarget.Normalize();
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towardsTarget, Vector3.up), turnSpeed * Time.deltaTime);
 
-			if (Vector3.Dot(towardsTarget, transform.forward) > 0.9) {
-				// Aim gun at target
-				Vector3 gunTowardsTarget = target.transform.position - gun.transform.position;
-				gunTowardsTarget.Normalize();
-				gun.transform.rotation = Quaternion.RotateTowards(gun.transform.rotation, Quaternion.LookRotation(gunTowardsTarget, Vector3.up), gunTurnSpeed * Time.deltaTime);
+            if (Vector3.Dot(towardsTarget, transform.forward) > 0.9)
+            {
+                // Aim gun at target
+                Vector3 gunTowardsTarget = target.transform.position - gun.transform.position;
+                gunTowardsTarget.Normalize();
+                gun.transform.rotation = Quaternion.RotateTowards(gun.transform.rotation, Quaternion.LookRotation(gunTowardsTarget, Vector3.up), gunTurnSpeed * Time.deltaTime);
 
-				if (Vector3.Dot(towardsTarget, transform.forward) > 0.9) {
-					gunEffect.SetActive(true);
-					target.TakeDamage(dps * Time.deltaTime);
-				} else {
-					gunEffect.SetActive(false);
-				}
-			} else {
-				gunEffect.SetActive(false);
-			}
-		} else {
-			gunEffect.SetActive(false);
-			FindClosestTargetWithinRange();
-		}
+                if (Vector3.Dot(towardsTarget, transform.forward) > 0.9)
+                {
+                    gunEffect.SetActive(true);
+                    target.TakeDamage(dps * Time.deltaTime);
+                }
+                else
+                {
+                    gunEffect.SetActive(false);
+                }
+            }
+            else
+            {
+                gunEffect.SetActive(false);
+            }
+        }
+        else
+        {
+            gunEffect.SetActive(false);
+            FindClosestTargetWithinRange();
+        }
 
-		timeSinceFlirted += Time.deltaTime;
-		if (timeSinceFlirted > flirtCD) {
-			isFlirtable = true;
-		}
-	}
+        timeSinceFlirted += Time.deltaTime;
+        if (timeSinceFlirted > flirtCD)
+        {
+            isFlirtable = true;
+        }
+    }
 
-	public void Flirt() {
-		health += healthGainedFromFlirting;
-		Instantiate(flirtParticleEffect, transform.position, Quaternion.identity);
-		isFlirtable = false;
-		timeSinceFlirted = 0;
-	}
+    public void Flirt()
+    {
+        health += healthGainedFromFlirting;
+        Instantiate(flirtParticleEffect, transform.position, Quaternion.identity);
+        isFlirtable = false;
+        timeSinceFlirted = 0;
+    }
 
-	public void AddAccessory(GameObject accessory) {
-		GameObject go = Instantiate(accessory);
-		if (accessory.name.StartsWith("Bow")) {
-			go.transform.SetParent(bowSlot.transform, false);
-		} else {
-			go.transform.SetParent(flowerSlot.transform, false);
-		}
-	}
+    public void AddAccessory(GameObject accessory)
+    {
+        GameObject go = Instantiate(accessory);
+        if (accessory.name.StartsWith("Bow"))
+        {
+            go.transform.SetParent(bowSlot.transform, false);
+        }
+        else
+        {
+            go.transform.SetParent(flowerSlot.transform, false);
+        }
+    }
 
-	public void SetLike(string label) {
-		likes = label;
-	}
+    public void SetLike(string label)
+    {
+        likes = label;
+    }
 
-	public void SetDislike(string label) {
-		dislikes = label;
-	}
+    public void SetDislike(string label)
+    {
+        dislikes = label;
+    }
 
-	void LateUpdate()
-	{
-		// confine gun rotation
-		gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, 0, 0);
-	}
+    void LateUpdate()
+    {
+        // confine gun rotation
+        gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, 0, 0);
+    }
 }

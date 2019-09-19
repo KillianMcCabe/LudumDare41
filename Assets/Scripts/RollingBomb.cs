@@ -2,31 +2,35 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RollingBomb : Enemy {
-
+public class RollingBomb : Enemy
+{
     float speed = 2;
 
-    void Start ()  {
-		maxHealth = 50;
+    void Start()
+    {
+        maxHealth = 50;
         health = 50;
 
-		damage = 25;
+        damage = 25;
     }
 
-	void Update() {
-		base.Update();
+    new private void Update()
+    {
+        base.Update();
 
-		healthBar.transform.position = transform.position + new Vector3 (0, 2, 0);
-	}
+        healthBar.transform.position = transform.position + new Vector3(0, 2, 0);
+    }
 
-	protected override void Move(Vector3 desiredVelocity) {
-	
-		Vector3 towardsTarget = target.transform.position - transform.position;
-		towardsTarget.Normalize();
+    protected override void Move(Vector3 desiredVelocity)
+    {
 
-		// handle movement
-		if (IsGrounded()) {
+        Vector3 towardsTarget = target.transform.position - transform.position;
+        towardsTarget.Normalize();
+
+        // handle movement
+        if (IsGrounded())
+        {
             rb.AddForce(towardsTarget * speed);
-		}
-	}
+        }
+    }
 }

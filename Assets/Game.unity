@@ -15400,6 +15400,11 @@ PrefabInstance:
       propertyPath: giveGiftText
       value: 
       objectReference: {fileID: 1452609196}
+    - target: {fileID: 135685702420830988, guid: 99d46b593f389094b9df12a15e079eee,
+        type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99d46b593f389094b9df12a15e079eee, type: 3}
 --- !u!1 &1850021489

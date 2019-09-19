@@ -2,16 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour {
+public class Player : MonoBehaviour
+{
 
-	Camera cam;
-	CharacterController controller;
+    Camera cam;
+    CharacterController controller;
+    // Rigidbody _rigidbody;
 
-	float moveSpeed = 11.5f;
-    float interactionRange = 8f;
-    float mass = 3.0f; // defines the character mass
+    private const float MoveSpeed = 12f;
+    private const float InteractionRange = 8f;
+    private const float Mass = 3.0f; // defines the character mass
+
     Vector3 impact = Vector3.zero;
-	Vector3 movement = Vector3.zero;
+    Vector3 movement = Vector3.zero;
 
     public GameObject flirtText;
     public GameObject giveGiftText;
@@ -25,54 +28,69 @@ public class Player : MonoBehaviour {
     Animator animator;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         cam = Camera.main;
         controller = GetComponent<CharacterController>();
+        // _rigidbody = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
     }
-	
-	// Update is called once per frame
-	void Update () {
 
+    // Update is called once per frame
+    void Update()
+    {
         // apply the impact force:
-        if (impact.magnitude > 0.2) {
+        if (impact.magnitude > 0.2)
+        {
             controller.Move(impact * Time.deltaTime);
-        } else {
-            HandleMovementInput();
+            // _rigidbody.AddForce(impact * Time.deltaTime);
         }
-        // consumes the impact energy each cycle:
-        impact = Vector3.Lerp(impact, Vector3.zero, 5*Time.deltaTime);
-        
+        else
+        {
+            HandleMovementInput();
 
-        if (giftHeld == null) {
+            // Apply gravity
+            controller.Move(Physics.gravity * Time.deltaTime);
+        }
+
+        // consumes the impact energy each cycle:
+        impact = Vector3.Lerp(impact, Vector3.zero, 5 * Time.deltaTime);
+
+        if (giftHeld == null)
+        {
             FindClosestGiftWithinRange();
         }
 
         flirtText.SetActive(false);
         giveGiftText.SetActive(false);
         turretInInteractionRange = null;
-        foreach (Turret t in GameController.instance.turrets) {
-            if (t.isAlive && Vector3.Distance(transform.position, t.transform.position) < interactionRange) {
+        foreach (Turret t in GameController.instance.turrets)
+        {
+            if (t.isAlive && Vector3.Distance(transform.position, t.transform.position) < InteractionRange)
+            {
                 turretInInteractionRange = t;
-                if (t.isFlirtable) {
+                if (t.isFlirtable)
+                {
                     flirtText.SetActive(true);
                 }
-                if (giftHeld != null) {
+                if (giftHeld != null)
+                {
                     giveGiftText.SetActive(true);
                 }
                 break;
             }
         }
 
-		HandleActionInputs();
+        HandleActionInputs();
         animator.SetBool("itemHeld", giftHeld != null);
     }
 
-    void FindClosestGiftWithinRange() {
+    void FindClosestGiftWithinRange()
+    {
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Gift"); // TODO: optimize
         foreach (GameObject obj in objs)
         {
-			float dist = Vector3.Distance(transform.position, obj.transform.position);
+            float dist = Vector3.Distance(transform.position, obj.transform.position);
             if (dist < giftPickUpRange)
             {
                 giftHeld = obj;
@@ -83,10 +101,10 @@ public class Player : MonoBehaviour {
                 giftRB.isKinematic = false;
                 giftHeld.GetComponent<Collider>().enabled = false;
                 giftHeld.GetComponent<Item>().PickedUp();
-				break;
+                break;
             }
         }
-	}
+    }
 
     void HandleMovementInput()
     {
@@ -104,11 +122,15 @@ public class Player : MonoBehaviour {
         movement += (horizontalVector * horizontal);
         movement = Vector3.ClampMagnitude(movement, 1);
 
-        if (movement.magnitude > 0) {
+        if (movement.magnitude > 0)
+        {
             // turn in direction of movement input
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(movement), 360 * Time.deltaTime);
-            if (Vector3.Dot(transform.forward, movement.normalized) > .9f) {
-                controller.Move(movement * Time.deltaTime * moveSpeed);
+            if (Vector3.Dot(transform.forward, movement.normalized) > .9f)
+            {
+                controller.Move(movement * Time.deltaTime * MoveSpeed);
+                // _rigidbody.AddForce(movement * MoveSpeed); -- too slidey
+                // transform.position += movement * Time.deltaTime * MoveSpeed;
             }
         }
     }
@@ -117,29 +139,34 @@ public class Player : MonoBehaviour {
     {
         if (turretInInteractionRange != null)
         {
-            if (Input.GetButtonDown("Interact") && giftHeld != null) {
+            if (Input.GetButtonDown("Interact") && giftHeld != null)
+            {
                 turretInInteractionRange.GiveItem(giftHeld.GetComponent<Item>());
                 Destroy(giftHeld.gameObject);
                 giftHeld = null;
             }
-			if (Input.GetButtonDown("Flirt") && turretInInteractionRange.isFlirtable) {
+            if (Input.GetButtonDown("Flirt") && turretInInteractionRange.isFlirtable)
+            {
                 turretInInteractionRange.Flirt();
             }
         }
     }
 
     // call this function to add an impact force:
-    void AddImpact(Vector3 dir, float force) {
+    void AddImpact(Vector3 dir, float force)
+    {
         dir.Normalize();
         if (dir.y < 0) dir.y = -dir.y; // reflect down force on the ground
-        impact += dir.normalized * force / mass;
+        impact += dir.normalized * force / Mass;
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Enemy") {
+        if (other.gameObject.tag == "Enemy")
+        {
             Vector3 dir = transform.position - other.transform.position;
             dir.y = 0;
+            Debug.Log("Impact " + other.gameObject.name);
             AddImpact(dir, 40);
         }
     }
