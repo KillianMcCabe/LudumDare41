@@ -86,7 +86,11 @@ public class MapGenerator : MonoBehaviour {
 		boxCollider4.size = new Vector3(mapWidth * tileSize, colliderHeight, 1);
 
 		NavMeshSurface navMesh = mapGO.AddComponent<NavMeshSurface>();
-		navMesh.layerMask = LayerMask.NameToLayer("TransparentFX");
+
+		LayerMask mask = ~0; // all layers
+		mask = mask & ~(1 << LayerMask.NameToLayer("SmallTerrainProp")); // ignore SmallTerrainProp layer
+		navMesh.layerMask = mask;
+
 		navMesh.BuildNavMesh();
 	}
 }
