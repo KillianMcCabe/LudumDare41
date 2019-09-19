@@ -38,8 +38,14 @@ public class Enemy : MonoBehaviour
             if (_health < 0)
             {
                 isAlive = false;
-                Destroy(gameObject);
-                GameController.instance.CheckIfGameOver();
+
+                if (Random.Range(0f, 1f) < chanceToDropItem)
+                {
+                    GameObject randomGift = GameController.instance.gifts[Random.Range(0, GameController.instance.gifts.Length)].gameObject;
+                    Instantiate(randomGift, transform.position, Random.rotation);
+                }
+
+                Death();
             }
         }
     }
@@ -84,22 +90,9 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    public bool TakeDamage(float dmg)
+    public void TakeDamage(float dmg)
     {
         health -= dmg;
-        if (health < 0)
-        {
-            isAlive = false;
-            GameController.instance.EnemyCount--;
-            if (Random.Range(0f, 1f) < chanceToDropItem)
-            {
-                GameObject randomGift = GameController.instance.gifts[Random.Range(0, GameController.instance.gifts.Length)].gameObject;
-                Instantiate(randomGift, transform.position, Random.rotation);
-            }
-            Destroy(gameObject);
-            return true;
-        }
-        return false;
     }
 
     // Update is called once per frame
@@ -125,6 +118,13 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    private void Death()
+    {
+        Destroy(gameObject);
+        GameController.instance.EnemyCount--;
+        GameController.instance.CheckIfGameOver();
+    }
+
     protected virtual void Move(Vector3 desiredVelocity)
     {
 
@@ -140,9 +140,11 @@ public class Enemy : MonoBehaviour
         {
             Debug.LogWarning("Bomb exploded on something that wasn't a turret??..");
         }
+
+        // spawn explosion effect
         Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-        Destroy(gameObject);
-        GameController.instance.EnemyCount--;
+
+        Death();
     }
 
     protected bool IsGrounded()

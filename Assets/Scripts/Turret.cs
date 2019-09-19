@@ -5,10 +5,8 @@ using UnityEngine;
 public class Turret : MonoBehaviour
 {
     float range = 30;
-    float turnSpeed = 34;
     float gunTurnSpeed = 34;
-    float dps = 0;
-    // float dps = 30;
+    float dps = 30;
 
     Enemy target;
 
@@ -113,7 +111,6 @@ public class Turret : MonoBehaviour
         health += Random.Range(8f, 10.5f) * multiplier;
         healthGainedFromFlirting += Random.Range(5f, 8.5f) * multiplier;
         range += Random.Range(2f, 3.5f) * multiplier;
-        turnSpeed += Random.Range(6f, 12f) * multiplier;
         gunTurnSpeed += Random.Range(6f, 12f) * multiplier;
         dps += Random.Range(1f, 3.5f) * multiplier;
     }
@@ -127,7 +124,7 @@ public class Turret : MonoBehaviour
             Vector3 towardsTarget = target.transform.position - transform.position;
             towardsTarget = new Vector3(towardsTarget.x, 0, towardsTarget.z);
             towardsTarget.Normalize();
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towardsTarget, Vector3.up), turnSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towardsTarget, Vector3.up), gunTurnSpeed * Time.deltaTime);
 
             if (Vector3.Dot(towardsTarget, transform.forward) > 0.9)
             {

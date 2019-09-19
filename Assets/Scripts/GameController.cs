@@ -60,7 +60,7 @@ public class GameController : MonoBehaviour
         }
     }
 
-    void Awake()
+    private void Awake()
     {
         if (instance == null)
         {
@@ -77,11 +77,9 @@ public class GameController : MonoBehaviour
         hint = Resources.Load("Prefabs/Hint_Text") as GameObject;
     }
 
-    // Use this for initialization
-    void Start()
+    private void Start()
     {
-
-        // Shuffle accessories (Knuth shuffle algorithm)
+        // Shuffle accessories (using Knuth shuffle algorithm)
         for (int t = 0; t < accessories.Length; t++)
         {
             GameObject tmp = accessories[t];
@@ -99,12 +97,14 @@ public class GameController : MonoBehaviour
             gifts[r] = tmp;
         }
 
+        // Decorate each turret with a random accessory
         for (var i = 0; i < turrets.Length && i < accessories.Length; i++)
         {
             GameObject accessory = accessories[i];
             turrets[i].AddAccessory(accessory);
         }
 
+        // Assign each turret a like and dislike
         for (var i = 0; i < turrets.Length && i < gifts.Length; i++)
         {
             turrets[i].SetLike(gifts[i].label);
