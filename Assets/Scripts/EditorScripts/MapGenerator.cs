@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class MapGenerator : MonoBehaviour {
 
@@ -36,7 +37,7 @@ public class MapGenerator : MonoBehaviour {
 			}
 		}
 
-		// add props to map
+		// add props to map (TODO: cluster trees and rocks)
 		foreach (PropData pd in propData) {
 			for (int i = 0; i < pd.count; i++) {
 				Vector3 pos = new Vector3(
@@ -83,5 +84,9 @@ public class MapGenerator : MonoBehaviour {
 		colliderGO4.transform.localEulerAngles = new Vector3(0, 90, 0);
 		BoxCollider boxCollider4 = colliderGO4.AddComponent<BoxCollider>();
 		boxCollider4.size = new Vector3(mapWidth * tileSize, colliderHeight, 1);
+
+		NavMeshSurface navMesh = mapGO.AddComponent<NavMeshSurface>();
+		navMesh.layerMask = LayerMask.NameToLayer("TransparentFX");
+		navMesh.BuildNavMesh();
 	}
 }
