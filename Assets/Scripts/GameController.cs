@@ -30,13 +30,19 @@ public class GameController : MonoBehaviour {
 	float timeBetweenWaves = 6;
 	float spawnAreaRadius = 8;
 	
-	GameObject level1Enemy;
-	GameObject level2Enemy;
-	GameObject level3Enemy;
+	[SerializeField]
+	private GameObject level1Enemy;
 
-	GameObject hint;
+	[SerializeField]
+	private GameObject level2Enemy;
 
-	public bool gameOver = false;
+	[SerializeField]
+	private GameObject level3Enemy;
+
+	private GameObject hint;
+
+	[System.NonSerialized]
+	private bool gameOver = false;
 
 	int enemyCount;
 	public int EnemyCount
@@ -61,10 +67,6 @@ public class GameController : MonoBehaviour {
 		}
 
 		turrets = GameObject.FindObjectsOfType<Turret>() as Turret[];
-
-		level1Enemy = Resources.Load("Prefabs/Bomb") as GameObject;
-		level2Enemy = Resources.Load("Prefabs/RollingBomb") as GameObject;
-		level3Enemy = Resources.Load("Prefabs/BigBomb") as GameObject;
 
 		hint = Resources.Load("Prefabs/Hint_Text") as GameObject;
 	}
