@@ -7,7 +7,6 @@ public class Player : MonoBehaviour
 
     Camera cam;
     CharacterController controller;
-    // Rigidbody _rigidbody;
 
     private const float MoveSpeed = 12f;
     private const float InteractionRange = 8f;
@@ -32,7 +31,6 @@ public class Player : MonoBehaviour
     {
         cam = Camera.main;
         controller = GetComponent<CharacterController>();
-        // _rigidbody = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
     }
 
@@ -43,7 +41,6 @@ public class Player : MonoBehaviour
         if (impact.magnitude > 0.2)
         {
             controller.Move(impact * Time.deltaTime);
-            // _rigidbody.AddForce(impact * Time.deltaTime);
         }
         else
         {
@@ -129,8 +126,6 @@ public class Player : MonoBehaviour
             if (Vector3.Dot(transform.forward, movement.normalized) > .9f)
             {
                 controller.Move(movement * Time.deltaTime * MoveSpeed);
-                // _rigidbody.AddForce(movement * MoveSpeed); -- too slidey
-                // transform.position += movement * Time.deltaTime * MoveSpeed;
             }
         }
     }
@@ -166,7 +161,6 @@ public class Player : MonoBehaviour
         {
             Vector3 dir = transform.position - other.transform.position;
             dir.y = 0;
-            Debug.Log("Impact " + other.gameObject.name);
             AddImpact(dir, 40);
         }
     }
