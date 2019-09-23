@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 135153767117801204}
   - component: {fileID: 114524188735318338}
   - component: {fileID: 195907536053698804}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: RollingBomb
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -133,7 +133,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.980068
-  m_Speed: 8
+  m_Speed: 7
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120

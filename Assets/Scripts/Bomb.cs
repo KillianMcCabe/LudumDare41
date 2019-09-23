@@ -12,9 +12,6 @@ public class Bomb : Enemy
 
     protected override void Move(Vector3 desiredVelocity)
     {
-        // Vector3 towardsTarget = target.transform.position - transform.position;
-        // towardsTarget.Normalize();
-
         desiredVelocity.Normalize();
 
         // handle movement

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 54602616236983000}
   - component: {fileID: 135368472399545118}
   - component: {fileID: 114323809368576650}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BigBomb
   m_TagString: Enemy
   m_Icon: {fileID: 0}

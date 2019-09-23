@@ -5,14 +5,28 @@ using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    private const float DisplayTurretInfoDistance = 10f;
 
     public static GameController instance = null;
+
+    [SerializeField]
+    public Player _player;
+
+    [SerializeField]
+    public TurretInfo _turretInfo;
 
     [System.NonSerialized]
     public Turret[] turrets;
 
     public GameObject[] accessories;
     public Item[] gifts;
+    private string[] _turretNames = {
+        "Darragh",
+        "Mike",
+        "Turk",
+        "Archimedes",
+        "Lucifer"
+    };
     public Transform[] spawnLocations;
 
     public Text waveCountText;
@@ -73,47 +87,85 @@ public class GameController : MonoBehaviour
         }
 
         turrets = GameObject.FindObjectsOfType<Turret>() as Turret[];
+        foreach (Turret turret in turrets)
+        {
+            turret.OnDeath += HandleTurretDeath;
+        }
 
         hint = Resources.Load("Prefabs/Hint_Text") as GameObject;
     }
 
+    // shuffle an array using Knuth shuffle algorithm
+    private T[] ShuffleArray<T>(T[] array)
+    {
+        for (int t = 0; t < array.Length; t++)
+        {
+            T tmp = array[t];
+            int r = Random.Range(t, array.Length);
+            array[t] = array[r];
+            array[r] = tmp;
+        }
+
+        return array;
+    }
+
     private void Start()
     {
-        // Shuffle accessories (using Knuth shuffle algorithm)
-        for (int t = 0; t < accessories.Length; t++)
-        {
-            GameObject tmp = accessories[t];
-            int r = Random.Range(t, accessories.Length);
-            accessories[t] = accessories[r];
-            accessories[r] = tmp;
-        }
+        // Shuffle accessories, gifts and names
+        accessories = ShuffleArray(accessories);
+        gifts = ShuffleArray(gifts);
+        _turretNames = ShuffleArray(_turretNames);
 
-        // also shuffle gifts
-        for (int t = 0; t < gifts.Length; t++)
-        {
-            Item tmp = gifts[t];
-            int r = Random.Range(t, gifts.Length);
-            gifts[t] = gifts[r];
-            gifts[r] = tmp;
-        }
-
-        // Decorate each turret with a random accessory
-        for (var i = 0; i < turrets.Length && i < accessories.Length; i++)
+        // Assign each turret an accessory, like and dislike, and name
+        for (var i = 0; i < turrets.Length && i < gifts.Length; i++)
         {
             GameObject accessory = accessories[i];
             turrets[i].AddAccessory(accessory);
-        }
 
-        // Assign each turret a like and dislike
-        for (var i = 0; i < turrets.Length && i < gifts.Length; i++)
-        {
             turrets[i].SetLike(gifts[i].label);
             turrets[i].SetDislike(gifts[(i + 1) % gifts.Length].label);
+
+            turrets[i].Name = _turretNames[i];
         }
 
         enemyCount = 0;
         nextWaveIn_Text.gameObject.SetActive(false);
         StartCoroutine(SpawnNextWave());
+    }
+
+    private void Update()
+    {
+        if (Input.GetButtonDown("Cancel"))
+        {
+            SceneController.instance.LoadScene("Main");
+        }
+
+        // Get closest turret to Player
+        Turret closestTurret = null;
+        float closestTurretDist = float.MaxValue;
+        foreach (Turret turret in turrets)
+        {
+            if (turret.isAlive)
+            {
+                float dist = Vector3.Distance(_player.transform.position, turret.transform.position);
+                if (dist < closestTurretDist)
+                {
+                    closestTurret = turret;
+                    closestTurretDist = dist;
+                }
+            }
+        }
+
+        if (closestTurret != null && closestTurretDist < DisplayTurretInfoDistance)
+        {
+            // display info for closest turret
+            _turretInfo.Show();
+            _turretInfo.DisplayInfoForTurret(closestTurret);
+        }
+        else
+        {
+            _turretInfo.Hide();
+        }
     }
 
     public void DisplayHint(string text)
@@ -204,12 +256,8 @@ public class GameController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void HandleTurretDeath()
     {
-        if (Input.GetButtonDown("Cancel"))
-        {
-            SceneController.instance.LoadScene("Main");
-        }
+        CheckIfGameOver();
     }
 }

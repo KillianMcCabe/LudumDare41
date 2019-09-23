@@ -2,13 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+enum StatType
+{
+    Range,
+    Speed,
+    Damage,
+    Fortitude,
+    Romance
+}
+
 public class Turret : MonoBehaviour
 {
-    float range = 30;
-    float gunTurnSpeed = 34;
-    float dps = 30;
+    public System.Action OnDeath;
+    public System.Action OnChange; // e.g. found like / dislike, gained stats etc
 
-    Enemy target;
+    private int _level = 1;
+    public int Level
+    {
+        get { return _level; }
+    }
+
+    // TODO: create DpsBaseValue and DpsPerStatPoint
+    [System.NonSerialized]
+    public float StatRange = 1;
+
+    [System.NonSerialized]
+    public float StatTurnSpeed = 1;
+
+    [System.NonSerialized]
+    public float StatDps = 1;
+
+    [System.NonSerialized]
+    public float StatFortitude = 1;
+
+    [System.NonSerialized]
+    public float StatRomance = 1;
+
+    public const float DpsBaseValue = 30f;
+    public const float DpsPerStatPoint = 5f;
+
+    private float _health = 100;
+
+    private Enemy target;
 
     public GameObject gun;
     public GameObject gunEffect;
@@ -21,17 +56,18 @@ public class Turret : MonoBehaviour
     GameObject receivedGoodGiftParticleEffect;
     GameObject receivedBadGiftParticleEffect;
 
+    public string Name {get; set;}
+
     public bool isFlirtable = false;
     float timeSinceFlirted = 0;
     float flirtCD = 10;
-
-    float maxHealth = 100;
-    float _health = 100;
-    float healthGainedFromFlirting = 30f;
     public bool isAlive;
 
-    string likes = "";
-    string dislikes = "";
+    public bool FoundLike {get; private set;}
+    public bool FoundDislike {get; private set;}
+
+    public string Likes {get; set;}
+    public string Dislikes {get; set;}
 
     public float health
     {
@@ -39,6 +75,7 @@ public class Turret : MonoBehaviour
         set
         {
             _health = value;
+            float maxHealth = CalculateMaxHealth();
             if (_health > maxHealth)
                 _health = maxHealth;
             healthIndicator.transform.localScale = new Vector3(_health / maxHealth, 1, 1);
@@ -46,7 +83,10 @@ public class Turret : MonoBehaviour
             {
                 isAlive = false;
                 Destroy(gameObject);
-                GameController.instance.CheckIfGameOver();
+                if (OnDeath != null)
+                {
+                    OnDeath.Invoke();
+                }
             }
         }
     }
@@ -59,6 +99,9 @@ public class Turret : MonoBehaviour
         receivedBadGiftParticleEffect = Resources.Load("Prefabs/ReceivedBadGiftParticleEffect") as GameObject;
 
         isAlive = true;
+
+        FoundLike = false;
+        FoundDislike = false;
     }
 
     // Use this for initialization
@@ -68,11 +111,36 @@ public class Turret : MonoBehaviour
         gunEffect.SetActive(false);
     }
 
+    private float CalculateFiringRange()
+    {
+        return 30f + (StatRange * 5f);
+    }
+
+    private float CalculateDps()
+    {
+        return DpsBaseValue + (StatDps * DpsPerStatPoint);
+    }
+
+    private float CalculateFlirtHealthGain()
+    {
+        return 30f + (StatRomance * 5f);
+    }
+
+    private float CalculateMaxHealth()
+    {
+        return 100f + (StatFortitude * 10f);
+    }
+
+    private float CalculateTurnSpeed()
+    {
+        return 34f + (StatTurnSpeed * 5f);
+    }
+
     void FindClosestTargetWithinRange()
     { // TODO: optimize
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Enemy");
 
-        float bestDistance = range;
+        float bestDistance = CalculateFiringRange();
         target = null;
         foreach (GameObject obj in objs)
         {
@@ -87,32 +155,61 @@ public class Turret : MonoBehaviour
 
     public void GiveItem(Item item)
     {
-
-        float multiplier;
-        if (item.label == likes)
+        int statPoints;
+        if (item.label == Likes)
         {
-            multiplier = 1.5f;
+            statPoints = 4;
             Instantiate(receivedGoodGiftParticleEffect, transform.position, Quaternion.identity);
             GameController.instance.DisplayHint("That was the perfect gift for that tower!");
+            FoundLike = true;
         }
-        else if (item.label == dislikes)
+        else if (item.label == Dislikes)
         {
-            multiplier = -0.5f;
+            statPoints = 0;
             Instantiate(receivedBadGiftParticleEffect, transform.position, Quaternion.identity);
             GameController.instance.DisplayHint("I don't think that was the right gift for that tower");
+            FoundDislike = true;
         }
         else
         {
-            multiplier = 1;
+            statPoints = 2;
             Instantiate(receivedGiftParticleEffect, transform.position, Quaternion.identity);
         }
 
-        maxHealth += Random.Range(5.0f, 8.5f) * multiplier;
-        health += Random.Range(8f, 10.5f) * multiplier;
-        healthGainedFromFlirting += Random.Range(5f, 8.5f) * multiplier;
-        range += Random.Range(2f, 3.5f) * multiplier;
-        gunTurnSpeed += Random.Range(6f, 12f) * multiplier;
-        dps += Random.Range(1f, 3.5f) * multiplier;
+        _level += statPoints;
+
+        // randomly distribute stat points
+        while (statPoints > 0)
+        {
+            StatType statType = (StatType)Random.Range(0, System.Enum.GetValues(typeof(StatType)).Length);
+            switch (statType)
+            {
+                case StatType.Range:
+                    StatRange ++;
+                    break;
+                case StatType.Fortitude:
+                    StatFortitude ++;
+                    break;
+                case StatType.Speed:
+                    StatTurnSpeed ++;
+                    break;
+                case StatType.Damage:
+                    StatDps ++;
+                    break;
+                case StatType.Romance:
+                    StatRomance ++;
+                    break;
+                default:
+                    Debug.LogError("Unhandled StatType \"" + statType + "\"");
+                    break;
+            }
+            statPoints--;
+        }
+
+        if (OnChange != null)
+        {
+            OnChange.Invoke();
+        }
     }
 
     // Update is called once per frame
@@ -124,19 +221,19 @@ public class Turret : MonoBehaviour
             Vector3 towardsTarget = target.transform.position - transform.position;
             towardsTarget = new Vector3(towardsTarget.x, 0, towardsTarget.z);
             towardsTarget.Normalize();
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towardsTarget, Vector3.up), gunTurnSpeed * Time.deltaTime);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towardsTarget, Vector3.up), CalculateTurnSpeed() * Time.deltaTime);
 
             if (Vector3.Dot(towardsTarget, transform.forward) > 0.9)
             {
                 // Aim gun at target
                 Vector3 gunTowardsTarget = target.transform.position - gun.transform.position;
                 gunTowardsTarget.Normalize();
-                gun.transform.rotation = Quaternion.RotateTowards(gun.transform.rotation, Quaternion.LookRotation(gunTowardsTarget, Vector3.up), gunTurnSpeed * Time.deltaTime);
+                gun.transform.rotation = Quaternion.RotateTowards(gun.transform.rotation, Quaternion.LookRotation(gunTowardsTarget, Vector3.up), CalculateTurnSpeed() * Time.deltaTime);
 
                 if (Vector3.Dot(towardsTarget, transform.forward) > 0.9)
                 {
                     gunEffect.SetActive(true);
-                    target.TakeDamage(dps * Time.deltaTime);
+                    target.TakeDamage(CalculateDps() * Time.deltaTime);
                 }
                 else
                 {
@@ -163,7 +260,7 @@ public class Turret : MonoBehaviour
 
     public void Flirt()
     {
-        health += healthGainedFromFlirting;
+        health += CalculateFlirtHealthGain();
         Instantiate(flirtParticleEffect, transform.position, Quaternion.identity);
         isFlirtable = false;
         timeSinceFlirted = 0;
@@ -184,12 +281,12 @@ public class Turret : MonoBehaviour
 
     public void SetLike(string label)
     {
-        likes = label;
+        Likes = label;
     }
 
     public void SetDislike(string label)
     {
-        dislikes = label;
+        Dislikes = label;
     }
 
     void LateUpdate()

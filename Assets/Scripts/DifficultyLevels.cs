@@ -19,7 +19,8 @@ public class DifficultyLevels
     }
 
     public static Wave[] waves = {
-        new Wave(8, 0, 0),
+        new Wave(6, 0, 0),
+        new Wave(10, 0, 0),
         new Wave(12, 2, 0),
         new Wave(16, 4, 0),
         new Wave(20, 6, 0),

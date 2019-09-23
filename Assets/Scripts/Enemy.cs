@@ -6,6 +6,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class Enemy : MonoBehaviour
 {
+    private const float ChanceToDropItem = 0.4f;
 
     protected Turret target;
     protected Rigidbody rb;
@@ -18,8 +19,6 @@ public class Enemy : MonoBehaviour
     protected float _health = 100;
     protected float maxHealth = 100;
     public bool isAlive = true;
-
-    float chanceToDropItem = 0.3f;
 
     GameObject explosionPrefab;
 
@@ -39,7 +38,7 @@ public class Enemy : MonoBehaviour
             {
                 isAlive = false;
 
-                if (Random.Range(0f, 1f) < chanceToDropItem)
+                if (Random.Range(0f, 1f) < ChanceToDropItem)
                 {
                     GameObject randomGift = GameController.instance.gifts[Random.Range(0, GameController.instance.gifts.Length)].gameObject;
                     Instantiate(randomGift, transform.position, Random.rotation);
@@ -83,7 +82,7 @@ public class Enemy : MonoBehaviour
                     }
                     else
                     {
-                        Debug.LogError("why is agent null?");
+                        Debug.LogError("agent should not be null!");
                     }
                 }
             }
