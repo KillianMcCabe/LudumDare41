@@ -9,13 +9,16 @@ public class MapGenerator : MonoBehaviour
     public GameObject grass;
 
     [System.Serializable]
-    public struct PropData
+    public struct PropData // TODO: use ScriptableObjects
     {
         public GameObject prefab;
         public int count;
     }
 
     public PropData[] propData;
+
+    [SerializeField]
+    GameObject _pebblesPrefab = null;
 
     int mapWidth = 10;
     int mapHeight = 10;
@@ -42,7 +45,7 @@ public class MapGenerator : MonoBehaviour
             }
         }
 
-        // add props to map (TODO: cluster trees and rocks)
+        // add props to map
         foreach (PropData pd in propData)
         {
             for (int i = 0; i < pd.count; i++)
@@ -54,10 +57,29 @@ public class MapGenerator : MonoBehaviour
                 );
                 GameObject go = Instantiate(pd.prefab, pos, Quaternion.Euler(0, Random.Range(0, 360f), 0));
                 go.transform.SetParent(mapGO.transform);
+
+                if (pd.prefab.name == "Rock")
+                {
+                    // spawn secondary rocks
+                    SpawnAround(pd.prefab, go, minScale: 0.4f, maxScale: 0.8f);
+
+                    // spawn pebbles around rock
+                    SpawnAround(_pebblesPrefab, go);
+                }
+                else if (pd.prefab.name.Contains("Grass"))
+                {
+                    // spawn secondary grass
+                    SpawnAround(pd.prefab, go);
+                }
+                else if (pd.prefab.name.Contains("Tree"))
+                {
+                    // spawn secondary trees
+                    SpawnAround(pd.prefab, go, minScale: 0.65f, maxScale: 0.95f);
+                }
             }
         }
 
-        // add colliders to edges
+        // add colliders to edges TODO: use fence prefab
 
         float colliderHeight = 10;
         var colliderGO1 = new GameObject();
@@ -99,5 +121,30 @@ public class MapGenerator : MonoBehaviour
         navMesh.layerMask = mask;
 
         navMesh.BuildNavMesh();
+    }
+
+    private void SpawnAround(GameObject prefabToSpawn, GameObject parent, float minScale = 1f, float maxScale = 1f)
+    {
+        float chanceOfSpawn = 0.6f;
+        while (Random.Range(0f, 1f) < chanceOfSpawn)
+        {
+            Renderer rend = prefabToSpawn.GetComponent<Renderer>();
+            float bounds = rend.bounds.extents.magnitude;
+            float clusterOffsetMin = bounds;
+            float clusterOffsetMax = bounds * 2;
+            Vector3 offset = new Vector3(Random.Range(clusterOffsetMin, clusterOffsetMax), 0, 0);
+            offset = Quaternion.Euler(0, Random.Range(0, 360f), 0) * offset;
+
+            GameObject pebblesGO = Instantiate(prefabToSpawn);
+            pebblesGO.transform.SetParent(parent.transform);
+            pebblesGO.transform.localPosition = offset;
+            pebblesGO.transform.rotation = Quaternion.Euler(0, Random.Range(0, 360f), 0);
+
+            float scale = Random.Range(minScale, maxScale);
+            pebblesGO.transform.localScale = new Vector3(scale, scale, scale);
+
+            // reduce chance to spawn more pebbles
+            chanceOfSpawn = (chanceOfSpawn / 2) - 0.05f;
+        }
     }
 }

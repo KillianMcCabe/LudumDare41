@@ -9,6 +9,9 @@ public class TurretInfo : MonoBehaviour
     private Text _name = null;
 
     [SerializeField]
+    private Text _level = null;
+
+    [SerializeField]
     private Text _likes = null;
 
     [SerializeField]
@@ -64,6 +67,7 @@ public class TurretInfo : MonoBehaviour
     private void UpdateTurretInfo()
     {
         _name.text = _turret.Name;
+        _level.text = _turret.Level.ToString();
 
         _likes.text = _turret.FoundLike ? _turret.Likes : "???";
         _dislikes.text = _turret.FoundDislike ? _turret.Dislikes : "???";

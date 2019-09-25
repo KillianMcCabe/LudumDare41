@@ -1,38 +1,14 @@
 fileFormatVersion: 2
-guid: 581d6fec9ad24954fa921f9fe7e86266
+guid: c8520725214909a4ab051d4dd0e6763e
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
     100000: //RootNode
-    100002: Grass1
-    100004: Grass2
-    100006: Rock
-    100008: Tree
     400000: //RootNode
-    400002: Grass1
-    400004: Grass2
-    400006: Rock
-    400008: Tree
-    2100000: unnamed
-    2100002: Forest__ForestPalette
+    2100000: Forest
     2300000: //RootNode
-    2300002: Grass1
-    2300004: Grass2
-    2300006: Rock
-    2300008: Tree
     3300000: //RootNode
-    3300002: Grass1
-    3300004: Grass2
-    3300006: Rock
-    3300008: Tree
-    4300000: Cube
-    4300002: Grass2
-    4300004: Grass1
-    4300006: Rock
-    4300008: Tree
-    7400000: Default Take
-    9500000: //RootNode
-    2186277476908879412: ImportLogs
+    4300000: Pebbles
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -92,7 +68,7 @@ ModelImporter:
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
-    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   importAnimation: 1
@@ -113,7 +89,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 2
+  animationType: 0
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
