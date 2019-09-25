@@ -3,13 +3,12 @@ using System.Collections;
 
 public class CameraControls : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject follow = null;
 
-    public GameObject follow;
-    float maxDistance = 24; // TODO: scroll wheel updates this val
+    float maxDistance = 24; // TODO: make scroll wheel update this val
     Vector3 focusOffset;
     Quaternion cameraRotation;
-
-    float speed = 1.5f;
 
     // Use this for initialization
     void Start()
@@ -30,20 +29,23 @@ public class CameraControls : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        if (GameController.instance.GamePaused)
+        {
+            return;
+        }
 
         float horizontalInput = 0;
         float verticalInput = 0;
-        // if (Input.GetButton("Fire1") || Input.GetButton("Fire2")) {
+
         horizontalInput = Input.GetAxis("CameraHorizontal");
         verticalInput = -Input.GetAxis("CameraVertical");
-        // }
 
         horizontal = Mathf.SmoothDamp(0, horizontalInput, ref xVelocity, smoothTime);
         vertical = Mathf.SmoothDamp(0, verticalInput, ref yVelocity, smoothTime);
 
-        focusOffset = Quaternion.AngleAxis(horizontal * speed * Time.deltaTime, Vector3.up) * focusOffset;
+        focusOffset = Quaternion.AngleAxis(horizontal * Settings.MouseSpeed * Time.deltaTime, Vector3.up) * focusOffset;
 
-        Vector3 newFocusOffset = Quaternion.AngleAxis(vertical * speed * Time.deltaTime, transform.right) * focusOffset;
+        Vector3 newFocusOffset = Quaternion.AngleAxis(vertical * Settings.MouseSpeed * Time.deltaTime, transform.right) * focusOffset;
         if (Vector3.Dot(Vector3.up, newFocusOffset.normalized) <= 0.99f && Vector3.Dot(Vector3.up, newFocusOffset.normalized) >= -0.85f)
         {
             focusOffset = newFocusOffset;
