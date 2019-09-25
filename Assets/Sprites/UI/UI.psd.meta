@@ -2,7 +2,8 @@ fileFormatVersion: 2
 guid: ecea9933579d2a74d9313ca77f85d17e
 TextureImporter:
   fileIDToRecycleName:
-    21300000: UI_0
+    21300000: UI_Turret
+    21300002: UI_Key
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -96,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UI_0
+      name: UI_Turret
       rect:
         serializedVersion: 2
         x: 0
@@ -104,13 +105,33 @@ TextureImporter:
         width: 256
         height: 256
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: f1ca686ca26949d4c98d34ee5bbd2749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Key
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1664
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 605ff5e6e7f8f6540bc851feb3c3baad
       vertices: []
       indices: 
       edges: []

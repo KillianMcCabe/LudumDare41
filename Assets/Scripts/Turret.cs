@@ -16,6 +16,8 @@ public class Turret : MonoBehaviour
     public System.Action OnDeath;
     public System.Action OnChange; // e.g. found like / dislike, gained stats etc
 
+    private const float FlirtCD = 10;
+
     private int _level = 1;
     public int Level
     {
@@ -51,23 +53,22 @@ public class Turret : MonoBehaviour
     public Transform flowerSlot;
     public GameObject healthIndicator;
 
-    GameObject flirtParticleEffect;
-    GameObject receivedGiftParticleEffect;
-    GameObject receivedGoodGiftParticleEffect;
-    GameObject receivedBadGiftParticleEffect;
+    private GameObject flirtParticleEffect;
+    private GameObject receivedGiftParticleEffect;
+    private GameObject receivedGoodGiftParticleEffect;
+    private GameObject receivedBadGiftParticleEffect;
 
     public string Name {get; set;}
-
-    public bool isFlirtable = false;
-    float timeSinceFlirted = 0;
-    float flirtCD = 10;
-    public bool isAlive;
-
-    public bool FoundLike {get; private set;}
-    public bool FoundDislike {get; private set;}
+    public bool IsFlirtable {get; private set;} = false;
+    public bool HasFullHealth {get; private set;} = false;
+    public bool isAlive {get; private set;} = true;
+    public bool FoundLike {get; private set;} = false;
+    public bool FoundDislike {get; private set;} = false;
 
     public string Likes {get; set;}
     public string Dislikes {get; set;}
+
+    private float _timeSinceFlirted = 0;
 
     public float health
     {
@@ -75,9 +76,15 @@ public class Turret : MonoBehaviour
         set
         {
             _health = value;
+            
             float maxHealth = CalculateMaxHealth();
             if (_health > maxHealth)
+            {
                 _health = maxHealth;
+            }
+
+            HasFullHealth = _health == maxHealth;
+
             healthIndicator.transform.localScale = new Vector3(_health / maxHealth, 1, 1);
             if (_health < 0)
             {
@@ -99,9 +106,6 @@ public class Turret : MonoBehaviour
         receivedBadGiftParticleEffect = Resources.Load("Prefabs/ReceivedBadGiftParticleEffect") as GameObject;
 
         isAlive = true;
-
-        FoundLike = false;
-        FoundDislike = false;
     }
 
     // Use this for initialization
@@ -251,10 +255,10 @@ public class Turret : MonoBehaviour
             FindClosestTargetWithinRange();
         }
 
-        timeSinceFlirted += Time.deltaTime;
-        if (timeSinceFlirted > flirtCD)
+        _timeSinceFlirted += Time.deltaTime;
+        if (_timeSinceFlirted > FlirtCD)
         {
-            isFlirtable = true;
+            IsFlirtable = true;
         }
     }
 
@@ -262,8 +266,8 @@ public class Turret : MonoBehaviour
     {
         health += CalculateFlirtHealthGain();
         Instantiate(flirtParticleEffect, transform.position, Quaternion.identity);
-        isFlirtable = false;
-        timeSinceFlirted = 0;
+        IsFlirtable = false;
+        _timeSinceFlirted = 0;
     }
 
     public void AddAccessory(GameObject accessory)

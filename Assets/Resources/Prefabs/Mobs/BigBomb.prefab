@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 54602616236983000}
   - component: {fileID: 135368472399545118}
   - component: {fileID: 114323809368576650}
+  - component: {fileID: 5400936218527935684}
   m_Layer: 11
   m_Name: BigBomb
   m_TagString: Enemy
@@ -122,3 +123,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isAlive: 1
+--- !u!195 &5400936218527935684
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067738913543748}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.980068
+  m_Speed: 2
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 2.3288774
+  m_BaseOffset: 1.1644387
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4

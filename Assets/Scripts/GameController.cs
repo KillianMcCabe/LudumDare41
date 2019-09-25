@@ -29,14 +29,25 @@ public class GameController : MonoBehaviour
     };
     public Transform[] spawnLocations;
 
-    public Text waveCountText;
-    public Text enemyCountText;
-    public GameObject gameWinScreen;
-    public GameObject gameOverScreen;
+    [Header("External components")]
 
-    public Text nextWaveIn_Text;
+    [SerializeField]
+    private Text waveCountText;
 
-    public Transform hintTransform;
+    [SerializeField]
+    private Text enemyCountText;
+
+    [SerializeField]
+    private GameObject gameWinScreen;
+
+    [SerializeField]
+    private GameObject gameOverScreen;
+
+    [SerializeField]
+    private Transform _messageUIPanel;
+
+    [SerializeField]
+    private Text nextWaveIn_Text;
 
     [System.NonSerialized]
     public int currentWaveIndex = 0;
@@ -172,7 +183,7 @@ public class GameController : MonoBehaviour
     {
         GameObject go = Instantiate(hint);
         go.GetComponent<Text>().text = text;
-        go.transform.SetParent(hintTransform, false);
+        go.transform.SetParent(_messageUIPanel, false);
     }
 
     public void CheckIfGameOver()

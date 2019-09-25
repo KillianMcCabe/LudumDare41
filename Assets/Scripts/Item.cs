@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    public string Label
-    {
-        get { return _label; }
-    }
-    [SerializeField]
-    private string _label = "";
-
     private const float GroundLifetimeDuration = 60f;
     private const float TimeTilCanBePickedUp = 0.25f;
     private const float ItemGlowEffectYPosition = 0.25f;
 
-    private float _t = 0f;
+    [SerializeField]
+    private string _label = "";
+    public string Label
+    {
+        get { return _label; }
+    }
 
     private bool _canBePickedUp = false;
     public bool CanBePickedUp
@@ -48,6 +46,8 @@ public class Item : MonoBehaviour
     private GameObject _itemGlowEffect;
     private Rigidbody _rb = null;
     private Collider _collider = null;
+
+    private float _t = 0f;
 
     // Use this for initialization
     private void Start()
