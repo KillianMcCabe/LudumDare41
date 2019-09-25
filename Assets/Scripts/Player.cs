@@ -128,7 +128,9 @@ public class Player : MonoBehaviour
 
             if (_itemsOverlapping.Count > 0)
             {
-                PickedUpItem(_itemsOverlapping[0]);
+                Item item = _itemsOverlapping[0];
+                Debug.Log("found " + item.Label + " at feet");
+                PickedUpItem(item);
                 _itemsOverlapping.RemoveAt(0);
             }
         }

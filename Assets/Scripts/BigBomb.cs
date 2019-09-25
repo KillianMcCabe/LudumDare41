@@ -16,9 +16,8 @@ public class BigBomb : Enemy
 
     void Start()
     {
-        maxHealth = 400;
-        health = 400;
-        // distToGround = GetComponent<Collider>().bounds.extents.y;
+        maxHealth = 500;
+        health = 500;
     }
 
     new void Update()

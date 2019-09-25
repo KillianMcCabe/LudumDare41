@@ -41,7 +41,7 @@ public class Turret : MonoBehaviour
     public float StatRomance = 1;
 
     public const float DpsBaseValue = 30f;
-    public const float DpsPerStatPoint = 5f;
+    public const float DpsPerStatPoint = 6f;
 
     private float _health = 100;
 
@@ -137,7 +137,12 @@ public class Turret : MonoBehaviour
 
     private float CalculateTurnSpeed()
     {
-        return 34f + (StatTurnSpeed * 5f);
+        return 34f + (StatTurnSpeed * 6f);
+    }
+
+    private float CalculateHealthRegenRate()
+    {
+        return (CalculateMaxHealth() / 100f); // 1% of max hp
     }
 
     void FindClosestTargetWithinRange()
@@ -248,6 +253,9 @@ public class Turret : MonoBehaviour
             {
                 gunEffect.SetActive(false);
             }
+
+            // health regen
+            _health += CalculateHealthRegenRate() * Time.deltaTime;
         }
         else
         {

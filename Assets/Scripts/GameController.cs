@@ -247,7 +247,7 @@ public class GameController : MonoBehaviour
         currentWave = DifficultyLevels.waves[currentWaveIndex]; // TODO: win condition
         currentWaveIndex++;
 
-        waveCountText.text = currentWaveIndex.ToString();
+        waveCountText.text = currentWaveIndex.ToString() + "/" + (DifficultyLevels.waves.Length - 1);
         if (currentWaveIndex >= DifficultyLevels.waves.Length)
         {
             waveCountText.text = "FINAL";
