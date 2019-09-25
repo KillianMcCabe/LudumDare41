@@ -4,35 +4,86 @@ using UnityEngine;
 
 public class Item : MonoBehaviour
 {
-    public string label = "";
-    float t = 0;
-    float duration = 60;
-    bool isHeld = false;
-    GameObject itemGlowEffect;
-
-    // Use this for initialization
-    void Start()
+    public string Label
     {
-        itemGlowEffect = Instantiate(Resources.Load("Prefabs/ItemGlow")) as GameObject;
-        itemGlowEffect.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
+        get { return _label; }
+    }
+    [SerializeField]
+    private string _label = "";
+
+    private const float GroundLifetimeDuration = 60f;
+    private const float TimeTilCanBePickedUp = 0.25f;
+    private const float ItemGlowEffectYPosition = 0.25f;
+
+    private float _t = 0f;
+
+    private bool _canBePickedUp = false;
+    public bool CanBePickedUp
+    {
+        get { return _canBePickedUp; }
     }
 
-    void Update()
+    private bool _isHeld = false;
+    public bool IsHeld
     {
-        if (!isHeld)
+        get { return _isHeld; }
+        set
         {
-            if (t > duration)
+            _isHeld = value;
+
+            if (!_isHeld)
             {
-                Destroy(itemGlowEffect);
-                Destroy(gameObject);
+                _canBePickedUp = false;
+                _t = 0f;
             }
-            t += Time.deltaTime;
+
+            _rb.useGravity = !_isHeld;
+            _rb.isKinematic = _isHeld;
+            _collider.enabled = !_isHeld;
+
+            _itemGlowEffect.SetActive(!_isHeld);
         }
     }
 
-    public void PickedUp()
+    private GameObject _itemGlowEffect;
+    private Rigidbody _rb = null;
+    private Collider _collider = null;
+
+    // Use this for initialization
+    private void Start()
     {
-        isHeld = true;
-        Destroy(itemGlowEffect);
+        _rb = GetComponent<Rigidbody>();
+        _collider = GetComponent<Collider>();
+
+        _itemGlowEffect = Instantiate(Resources.Load("Prefabs/ItemGlow"), gameObject.transform) as GameObject;
+        _itemGlowEffect.transform.position = new Vector3(transform.position.x, ItemGlowEffectYPosition, transform.position.z);
+    }
+
+    private void Update()
+    {
+        if (!_isHeld)
+        {
+            if (_t > TimeTilCanBePickedUp && !_canBePickedUp)
+            {
+                _canBePickedUp = true;
+
+                // reset collider
+                _collider.enabled = true;
+            }
+            if (_t > GroundLifetimeDuration)
+            {
+                Destroy(gameObject);
+            }
+            _t += Time.deltaTime;
+
+            _itemGlowEffect.transform.position = new Vector3(transform.position.x, ItemGlowEffectYPosition, transform.position.z);
+        }
+    }
+
+    public void Throw(Vector3 force)
+    {
+        IsHeld = false;
+        transform.SetParent(null);
+        _rb.AddForce(force, ForceMode.VelocityChange);
     }
 }

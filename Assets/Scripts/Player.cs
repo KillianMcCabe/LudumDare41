@@ -4,34 +4,40 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-
-    Camera cam;
-    CharacterController controller;
+    private Camera _cam;
+    private CharacterController _controller;
+    private Collider _collider = null;
 
     private const float MoveSpeed = 12f;
     private const float InteractionRange = 8f;
     private const float Mass = 3.0f; // defines the character mass
+    private const float ThrowItemForce = 24.0f;
 
-    Vector3 impact = Vector3.zero;
-    Vector3 movement = Vector3.zero;
+    private List<Item> itemsOverlapping;
+
+    private Vector3 impact = Vector3.zero;
+    private Vector3 movement = Vector3.zero;
 
     public GameObject flirtText;
     public GameObject giveGiftText;
+    public Transform giftHoldTransform;
 
     private Turret turretInInteractionRange = null;
 
-    public Transform giftHoldTransform;
-    GameObject giftHeld = null;
-    float giftPickUpRange = 5;
+    private Item giftHeld = null;
+    private float giftPickUpRange = 5;
 
-    Animator animator;
+    Animator _animator;
 
     // Use this for initialization
-    void Start()
+    void Awake()
     {
-        cam = Camera.main;
-        controller = GetComponent<CharacterController>();
-        animator = GetComponent<Animator>();
+        _cam = Camera.main;
+        _controller = GetComponent<CharacterController>();
+        _animator = GetComponent<Animator>();
+        _collider = GetComponent<Collider>();
+
+        itemsOverlapping = new List<Item>();
     }
 
     // Update is called once per frame
@@ -40,23 +46,18 @@ public class Player : MonoBehaviour
         // apply the impact force:
         if (impact.magnitude > 0.2)
         {
-            controller.Move(impact * Time.deltaTime);
+            _controller.Move(impact * Time.deltaTime);
         }
         else
         {
             HandleMovementInput();
 
             // Apply gravity
-            controller.Move(Physics.gravity * Time.deltaTime);
+            _controller.Move(Physics.gravity * Time.deltaTime);
         }
 
         // consumes the impact energy each cycle:
         impact = Vector3.Lerp(impact, Vector3.zero, 5 * Time.deltaTime);
-
-        if (giftHeld == null)
-        {
-            FindClosestGiftWithinRange();
-        }
 
         flirtText.SetActive(false);
         giveGiftText.SetActive(false);
@@ -79,28 +80,9 @@ public class Player : MonoBehaviour
         }
 
         HandleActionInputs();
-        animator.SetBool("itemHeld", giftHeld != null);
-    }
+        _animator.SetBool("itemHeld", giftHeld != null);
 
-    void FindClosestGiftWithinRange()
-    {
-        GameObject[] objs = GameObject.FindGameObjectsWithTag("Gift"); // TODO: optimize
-        foreach (GameObject obj in objs)
-        {
-            float dist = Vector3.Distance(transform.position, obj.transform.position);
-            if (dist < giftPickUpRange)
-            {
-                giftHeld = obj;
-                giftHeld.transform.SetParent(giftHoldTransform, false);
-                giftHeld.transform.localPosition = new Vector3(0, 0, 0);
-                Rigidbody giftRB = giftHeld.GetComponent<Rigidbody>();
-                giftRB.useGravity = false;
-                giftRB.isKinematic = false;
-                giftHeld.GetComponent<Collider>().enabled = false;
-                giftHeld.GetComponent<Item>().PickedUp();
-                break;
-            }
-        }
+        Debug.Log("" + itemsOverlapping.Count);
     }
 
     void HandleMovementInput()
@@ -112,8 +94,8 @@ public class Player : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
 
         // calculate movement vectors
-        Vector3 verticalVector = Vector3.Cross(cam.transform.right, Vector3.up);
-        Vector3 horizontalVector = (new Vector3(cam.transform.right.x, 0, cam.transform.right.z));
+        Vector3 verticalVector = Vector3.Cross(_cam.transform.right, Vector3.up);
+        Vector3 horizontalVector = (new Vector3(_cam.transform.right.x, 0, _cam.transform.right.z));
 
         movement += (verticalVector * vertical);
         movement += (horizontalVector * horizontal);
@@ -125,20 +107,40 @@ public class Player : MonoBehaviour
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(movement), 360 * Time.deltaTime);
             if (Vector3.Dot(transform.forward, movement.normalized) > .9f)
             {
-                controller.Move(movement * Time.deltaTime * MoveSpeed);
+                _controller.Move(movement * Time.deltaTime * MoveSpeed);
             }
         }
     }
 
     void HandleActionInputs()
     {
+        if (Input.GetButtonDown("DropItem") && giftHeld != null)
+        {
+            float throwAngle = -25f;
+            Vector3 throwVector = Quaternion.AngleAxis(throwAngle, transform.right) * transform.forward;
+            giftHeld.Throw(throwVector * ThrowItemForce);
+            giftHeld = null;
+
+            if (itemsOverlapping.Count > 0)
+            {
+                PickedUpItem(itemsOverlapping[0]);
+                itemsOverlapping.RemoveAt(0);
+            }
+        }
+
         if (turretInInteractionRange != null)
         {
             if (Input.GetButtonDown("Interact") && giftHeld != null)
             {
-                turretInInteractionRange.GiveItem(giftHeld.GetComponent<Item>());
+                turretInInteractionRange.GiveItem(giftHeld);
                 Destroy(giftHeld.gameObject);
                 giftHeld = null;
+
+                if (itemsOverlapping.Count > 0)
+                {
+                    PickedUpItem(itemsOverlapping[0]);
+                    itemsOverlapping.RemoveAt(0);
+                }
             }
             if (Input.GetButtonDown("Flirt") && turretInInteractionRange.isFlirtable)
             {
@@ -155,6 +157,14 @@ public class Player : MonoBehaviour
         impact += dir.normalized * force / Mass;
     }
 
+    private void PickedUpItem(Item item)
+    {
+        giftHeld = item;
+        giftHeld.IsHeld = true;
+        giftHeld.transform.SetParent(giftHoldTransform, false);
+        giftHeld.transform.localPosition = new Vector3(0, 0, 0);
+    }
+
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Enemy")
@@ -162,6 +172,31 @@ public class Player : MonoBehaviour
             Vector3 dir = transform.position - other.transform.position;
             dir.y = 0;
             AddImpact(dir, 40);
+        }
+        else if (other.gameObject.tag == "Gift")
+        {
+            if (giftHeld == null)
+            {
+                Item item = other.gameObject.GetComponent<Item>();
+                if (item.CanBePickedUp)
+                {
+                    PickedUpItem(item);
+                }
+            }
+            else
+            {
+                Item item = other.gameObject.GetComponent<Item>();
+                itemsOverlapping.Add(item);
+            }
+        }
+    }
+
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.tag == "Gift")
+        {
+            Item item = other.gameObject.GetComponent<Item>();
+            itemsOverlapping.Remove(item);
         }
     }
 }

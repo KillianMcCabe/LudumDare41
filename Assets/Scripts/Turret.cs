@@ -156,14 +156,14 @@ public class Turret : MonoBehaviour
     public void GiveItem(Item item)
     {
         int statPoints;
-        if (item.label == Likes)
+        if (item.Label == Likes)
         {
             statPoints = 4;
             Instantiate(receivedGoodGiftParticleEffect, transform.position, Quaternion.identity);
             GameController.instance.DisplayHint("That was the perfect gift for that tower!");
             FoundLike = true;
         }
-        else if (item.label == Dislikes)
+        else if (item.Label == Dislikes)
         {
             statPoints = 0;
             Instantiate(receivedBadGiftParticleEffect, transform.position, Quaternion.identity);
@@ -293,5 +293,15 @@ public class Turret : MonoBehaviour
     {
         // confine gun rotation
         gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, 0, 0);
+    }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.gameObject.tag == "Gift")
+        {
+            Item item = other.gameObject.GetComponent<Item>();
+            GiveItem(item);
+            GameObject.Destroy(item.gameObject);
+        }
     }
 }

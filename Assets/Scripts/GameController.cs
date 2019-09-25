@@ -122,8 +122,8 @@ public class GameController : MonoBehaviour
             GameObject accessory = accessories[i];
             turrets[i].AddAccessory(accessory);
 
-            turrets[i].SetLike(gifts[i].label);
-            turrets[i].SetDislike(gifts[(i + 1) % gifts.Length].label);
+            turrets[i].SetLike(gifts[i].Label);
+            turrets[i].SetDislike(gifts[(i + 1) % gifts.Length].Label);
 
             turrets[i].Name = _turretNames[i];
         }
