@@ -101,11 +101,13 @@ public class GameController : MonoBehaviour
             {
                 // pause gameplay
                 Time.timeScale = 0;
+                CursorManager.SetCursorState(CursorLockMode.None);
             }
             else
             {
                 // resume gameplay
                 Time.timeScale = 1;
+                CursorManager.SetCursorState(CursorLockMode.Locked);
             }
         }
     }
@@ -131,22 +133,10 @@ public class GameController : MonoBehaviour
         hint = Resources.Load("Prefabs/Hint_Text") as GameObject;
     }
 
-    // shuffle an array using Knuth shuffle algorithm
-    private T[] ShuffleArray<T>(T[] array)
-    {
-        for (int t = 0; t < array.Length; t++)
-        {
-            T tmp = array[t];
-            int r = Random.Range(t, array.Length);
-            array[t] = array[r];
-            array[r] = tmp;
-        }
-
-        return array;
-    }
-
     private void Start()
     {
+        CursorManager.SetCursorState(CursorLockMode.Locked);
+
         // Shuffle accessories, gifts and names
         accessories = ShuffleArray(accessories);
         gifts = ShuffleArray(gifts);
@@ -174,7 +164,6 @@ public class GameController : MonoBehaviour
         if (Input.GetButtonDown("Cancel"))
         {
             GamePaused = !GamePaused;
-            // SceneController.instance.LoadScene("Main");
         }
 
         // Get closest turret to Player
@@ -236,7 +225,22 @@ public class GameController : MonoBehaviour
         gameOverScreen.SetActive(true);
     }
 
-    IEnumerator SpawnNextWave()
+    // TODO: move to Utils class
+    // shuffle an array using Knuth shuffle algorithm
+    private T[] ShuffleArray<T>(T[] array)
+    {
+        for (int t = 0; t < array.Length; t++)
+        {
+            T tmp = array[t];
+            int r = Random.Range(t, array.Length);
+            array[t] = array[r];
+            array[r] = tmp;
+        }
+
+        return array;
+    }
+
+    private IEnumerator SpawnNextWave()
     {
         if (currentWaveIndex >= DifficultyLevels.waves.Length)
         {
