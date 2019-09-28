@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class GameController : MonoBehaviour
 {
     private const float DisplayTurretInfoDistance = 10f;
-    private const float TimeBetweenWaves = 6;
+    private const float TimeBetweenWaves = 11;
     private const float SpawnAreaRadius = 8;
 
     public static GameController instance = null;

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-enum StatType
+public enum StatType
 {
+    Unknown,
     Range,
     Speed,
     Damage,
@@ -26,19 +27,19 @@ public class Turret : MonoBehaviour
 
     // TODO: create DpsBaseValue and DpsPerStatPoint
     [System.NonSerialized]
-    public float StatRange = 1;
+    public int StatRange = 1;
 
     [System.NonSerialized]
-    public float StatTurnSpeed = 1;
+    public int StatTurnSpeed = 1;
 
     [System.NonSerialized]
-    public float StatDps = 1;
+    public int StatDps = 1;
 
     [System.NonSerialized]
-    public float StatFortitude = 1;
+    public int StatFortitude = 1;
 
     [System.NonSerialized]
-    public float StatRomance = 1;
+    public int StatRomance = 1;
 
     public const float DpsBaseValue = 30f;
     public const float DpsPerStatPoint = 6f;
@@ -59,6 +60,7 @@ public class Turret : MonoBehaviour
     private GameObject receivedBadGiftParticleEffect;
 
     public string Name {get; set;}
+    public int AvailableStatPoints {get; set;} = 0;
     public bool IsFlirtable {get; private set;} = false;
     public bool HasFullHealth {get; private set;} = false;
     public bool isAlive {get; private set;} = true;
@@ -164,56 +166,55 @@ public class Turret : MonoBehaviour
 
     public void GiveItem(Item item)
     {
-        int statPoints;
         if (item.Label == Likes)
         {
-            statPoints = 4;
+            AvailableStatPoints += 4;
             Instantiate(receivedGoodGiftParticleEffect, transform.position, Quaternion.identity);
             GameController.instance.DisplayHint("That was the perfect gift for that tower!");
             FoundLike = true;
         }
         else if (item.Label == Dislikes)
         {
-            statPoints = 0;
+            AvailableStatPoints += 0;
             Instantiate(receivedBadGiftParticleEffect, transform.position, Quaternion.identity);
             GameController.instance.DisplayHint("I don't think that was the right gift for that tower");
             FoundDislike = true;
         }
         else
         {
-            statPoints = 2;
+            AvailableStatPoints += 2;
             Instantiate(receivedGiftParticleEffect, transform.position, Quaternion.identity);
         }
 
-        _level += statPoints;
+        _level += AvailableStatPoints;
 
         // randomly distribute stat points
-        while (statPoints > 0)
-        {
-            StatType statType = (StatType)Random.Range(0, System.Enum.GetValues(typeof(StatType)).Length);
-            switch (statType)
-            {
-                case StatType.Range:
-                    StatRange ++;
-                    break;
-                case StatType.Fortitude:
-                    StatFortitude ++;
-                    break;
-                case StatType.Speed:
-                    StatTurnSpeed ++;
-                    break;
-                case StatType.Damage:
-                    StatDps ++;
-                    break;
-                case StatType.Romance:
-                    StatRomance ++;
-                    break;
-                default:
-                    Debug.LogError("Unhandled StatType \"" + statType + "\"");
-                    break;
-            }
-            statPoints--;
-        }
+        // while (statPoints > 0)
+        // {
+        //     StatType statType = (StatType)Random.Range(0, System.Enum.GetValues(typeof(StatType)).Length);
+        //     switch (statType)
+        //     {
+        //         case StatType.Range:
+        //             StatRange ++;
+        //             break;
+        //         case StatType.Fortitude:
+        //             StatFortitude ++;
+        //             break;
+        //         case StatType.Speed:
+        //             StatTurnSpeed ++;
+        //             break;
+        //         case StatType.Damage:
+        //             StatDps ++;
+        //             break;
+        //         case StatType.Romance:
+        //             StatRomance ++;
+        //             break;
+        //         default:
+        //             Debug.LogError("Unhandled StatType \"" + statType + "\"");
+        //             break;
+        //     }
+        //     statPoints--;
+        // }
 
         if (OnChange != null)
         {
@@ -221,8 +222,7 @@ public class Turret : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (target != null && target.isAlive)
         {
@@ -270,6 +270,12 @@ public class Turret : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        // confine gun rotation
+        gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, 0, 0);
+    }
+
     public void Flirt()
     {
         health += CalculateFlirtHealthGain();
@@ -301,10 +307,29 @@ public class Turret : MonoBehaviour
         Dislikes = label;
     }
 
-    void LateUpdate()
+    public void ChangeStat(StatType statType, int level)
     {
-        // confine gun rotation
-        gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, 0, 0);
+        switch (statType)
+        {
+            case StatType.Range:
+                StatRange = level;
+                break;
+            case StatType.Fortitude:
+                StatFortitude = level;
+                break;
+            case StatType.Speed:
+                StatTurnSpeed = level;
+                break;
+            case StatType.Damage:
+                StatDps = level;
+                break;
+            case StatType.Romance:
+                StatRomance = level;
+                break;
+            default:
+                Debug.LogError("Unhandled StatType \"" + statType + "\"");
+                break;
+        }
     }
 
     private void OnCollisionEnter(Collision other)
