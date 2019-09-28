@@ -245,6 +245,12 @@ public class GameController : MonoBehaviour
         if (currentWaveIndex >= DifficultyLevels.waves.Length)
         {
             gameWinScreen.SetActive(true);
+
+            yield return new WaitForSeconds(4);
+
+            GamePaused = false;
+            SceneController.instance.LoadScene("Success");
+
             yield break; // exit coroutine
         }
 
