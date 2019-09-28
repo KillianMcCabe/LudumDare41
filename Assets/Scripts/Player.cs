@@ -24,10 +24,10 @@ public class Player : MonoBehaviour
     [Header ("Sub-components")]
 
     [SerializeField]
-    private Transform giftHoldTransform;
+    private Transform giftHoldTransform = null;
 
-    private Camera _cam;
-    private CharacterController _controller;
+    private Camera _cam = null;
+    private CharacterController _controller = null;
     private Collider _collider = null;
 
     private List<Item> _itemsOverlapping;

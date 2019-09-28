@@ -12,10 +12,10 @@ public class GameController : MonoBehaviour
     public static GameController instance = null;
 
     [SerializeField]
-    public Player _player;
+    public Player _player = null;
 
     [SerializeField]
-    public TurretInfo _turretInfo;
+    public TurretInfo _turretInfo = null;
 
     [System.NonSerialized]
     public Turret[] turrets;
@@ -34,43 +34,40 @@ public class GameController : MonoBehaviour
     [Header("External components")]
 
     [SerializeField]
-    private Text waveCountText;
+    private Text waveCountText = null;
 
     [SerializeField]
-    private Text enemyCountText;
+    private Text enemyCountText = null;
 
     [SerializeField]
-    private GameObject gameWinScreen;
+    private GameObject gameWinScreen = null;
 
     [SerializeField]
-    private GameObject gameOverScreen;
+    private GameObject gameOverScreen = null;
 
     [SerializeField]
-    private Transform _messageUIPanel;
+    private Transform _messageUIPanel = null;
 
     [SerializeField]
-    private Text nextWaveIn_Text;
+    private Text nextWaveIn_Text = null;
 
     [System.NonSerialized]
     public int currentWaveIndex = 0;
     public DifficultyLevels.Wave currentWave;
 
     [SerializeField]
-    private GameObject _pauseScreen;
+    private GameObject _pauseScreen = null;
 
     [SerializeField]
-    private GameObject level1Enemy;
+    private GameObject level1Enemy = null;
 
     [SerializeField]
-    private GameObject level2Enemy;
+    private GameObject level2Enemy = null;
 
     [SerializeField]
-    private GameObject level3Enemy;
+    private GameObject level3Enemy = null;
 
-    private GameObject hint;
-
-    [System.NonSerialized]
-    private bool gameOver = false;
+    private GameObject hint = null;
 
     int enemyCount;
     public int EnemyCount
@@ -221,7 +218,7 @@ public class GameController : MonoBehaviour
                 return;
             }
         }
-        gameOver = true;
+
         gameOverScreen.SetActive(true);
     }
 
