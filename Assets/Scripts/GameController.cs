@@ -15,6 +15,9 @@ public class GameController : MonoBehaviour
     public Robot _robotPrefab = null;
 
     [SerializeField]
+    public MovementMarker _movementMarkerPrefab = null;
+
+    [SerializeField]
     public TurretInfo _turretInfo = null;
 
     [System.NonSerialized]
@@ -204,6 +207,7 @@ public class GameController : MonoBehaviour
                 Vector3 position = hit.point;
 
                 // TODO: instantiate prefab to show where Robot is moving to
+                Instantiate(_movementMarkerPrefab, position, Quaternion.identity);
 
                 _robot.MoveTo(position);
             }

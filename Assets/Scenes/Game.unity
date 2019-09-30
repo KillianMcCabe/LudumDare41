@@ -27604,6 +27604,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _robotPrefab: {fileID: 553839293, guid: 99d46b593f389094b9df12a15e079eee, type: 3}
+  _movementMarkerPrefab: {fileID: 2064772072530120143, guid: 0767b8b9e0b7fa54bacf70116228d3c7,
+    type: 3}
   _turretInfo: {fileID: 1244032970}
   accessories:
   - {fileID: 1115280465554970, guid: e9acb3fa5dcb83b4d9045f297c0a0358, type: 3}
