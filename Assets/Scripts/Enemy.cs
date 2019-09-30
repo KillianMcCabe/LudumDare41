@@ -10,7 +10,7 @@ public class Enemy : MonoBehaviour
 
     protected Turret target;
     protected Rigidbody rb;
-    NavMeshAgent agent;
+    private NavMeshAgent _agent = null;
 
     protected float distToGround = 0;
 
@@ -53,7 +53,7 @@ public class Enemy : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         distToGround = GetComponent<Collider>().bounds.extents.y;
-        agent = GetComponent<NavMeshAgent>();
+        _agent = GetComponent<NavMeshAgent>();
 
         explosionPrefab = Resources.Load("Prefabs/Boom") as GameObject;
 
@@ -76,9 +76,9 @@ public class Enemy : MonoBehaviour
                     target = t.GetComponent<Turret>();
                     closestDist = dist;
 
-                    if (agent != null)
+                    if (_agent != null)
                     {
-                        agent.SetDestination(target.transform.position);
+                        _agent.SetDestination(target.transform.position);
                     }
                     else
                     {

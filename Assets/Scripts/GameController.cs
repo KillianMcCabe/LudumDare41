@@ -12,7 +12,7 @@ public class GameController : MonoBehaviour
     public static GameController instance = null;
 
     [SerializeField]
-    public Player _player = null;
+    public Robot _robotPrefab = null;
 
     [SerializeField]
     public TurretInfo _turretInfo = null;
@@ -32,6 +32,15 @@ public class GameController : MonoBehaviour
     public Transform[] spawnLocations;
 
     [Header("External components")]
+
+    [SerializeField]
+    private GameObject _giveGiftInputHint = null;
+
+    [SerializeField]
+    private GameObject _throwGiftInputHint = null;
+
+    [SerializeField]
+    private GameObject _flirtInputHint = null;
 
     [SerializeField]
     private Text waveCountText = null;
@@ -58,6 +67,8 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private GameObject _pauseScreen = null;
 
+    [Header ("Prefabs references")]
+
     [SerializeField]
     private GameObject level1Enemy = null;
 
@@ -68,6 +79,7 @@ public class GameController : MonoBehaviour
     private GameObject level3Enemy = null;
 
     private GameObject hint = null;
+    private Robot _robot = null;
 
     int enemyCount;
     public int EnemyCount
@@ -98,13 +110,11 @@ public class GameController : MonoBehaviour
             {
                 // pause gameplay
                 Time.timeScale = 0;
-                CursorManager.SetCursorState(CursorLockMode.None);
             }
             else
             {
                 // resume gameplay
                 Time.timeScale = 1;
-                CursorManager.SetCursorState(CursorLockMode.Locked);
             }
         }
     }
@@ -128,11 +138,12 @@ public class GameController : MonoBehaviour
         }
 
         hint = Resources.Load("Prefabs/Hint_Text") as GameObject;
+        _robot = Instantiate(_robotPrefab, Vector3.zero, Quaternion.identity);
     }
 
     private void Start()
     {
-        CursorManager.SetCursorState(CursorLockMode.Locked);
+        CursorManager.SetCursorState(CursorLockMode.Confined);
 
         // Shuffle accessories, gifts and names
         accessories = ShuffleArray(accessories);
@@ -170,12 +181,31 @@ public class GameController : MonoBehaviour
         {
             if (turret.isAlive)
             {
-                float dist = Vector3.Distance(_player.transform.position, turret.transform.position);
+                float dist = Vector3.Distance(_robot.transform.position, turret.transform.position);
                 if (dist < closestTurretDist)
                 {
                     closestTurret = turret;
                     closestTurretDist = dist;
                 }
+            }
+        }
+
+        // check if player clicked mouse
+        if (Input.GetMouseButtonDown(0))
+        {
+            int layerMask = 1 << LayerMask.NameToLayer("Terrain");
+
+            //create a ray cast and set it to the mouses cursor position in game
+            Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+            RaycastHit hit;
+            float distance = 100;
+            if (Physics.Raycast (ray, out hit, distance, layerMask))
+            {
+                Vector3 position = hit.point;
+
+                // TODO: instantiate prefab to show where Robot is moving to
+
+                _robot.MoveTo(position);
             }
         }
 
@@ -189,6 +219,10 @@ public class GameController : MonoBehaviour
         {
             _turretInfo.Hide();
         }
+
+        _throwGiftInputHint.SetActive(_robot.GiftHeld);
+        _flirtInputHint.SetActive(_robot.TurretInInteractionRange != null && _robot.TurretInInteractionRange.IsFlirtable && !_robot.TurretInInteractionRange.HasFullHealth);
+        _giveGiftInputHint.SetActive(_robot.TurretInInteractionRange != null && _robot.GiftHeld);
     }
 
     public void Resume()

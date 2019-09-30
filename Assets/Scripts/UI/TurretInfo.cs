@@ -41,33 +41,13 @@ public class TurretInfo : MonoBehaviour
     [SerializeField]
     private Button _confirmStatButton = null;
 
-    [SerializeField]
-    private Text _statsPromtText = null;
-
     private Turret _turret = null;
-
-    private bool _editingStats = false;
 
     private void Awake()
     {
         foreach (TurretInfoStat statInteractable in _statInteractables)
         {
             statInteractable.OnStatLevelChange += HandleStatLevelChange;
-        }
-    }
-
-    private void Update()
-    {
-        if (Input.GetButtonDown("ExamineTurret"))
-        {
-            if (_availableStatPoints.Count <= 0)
-            {
-                EditStats(false);
-            }
-            else
-            {
-                EditStats(!_editingStats);
-            }
         }
     }
 
@@ -79,13 +59,6 @@ public class TurretInfo : MonoBehaviour
     public void Hide()
     {
         gameObject.SetActive(false);
-    }
-
-    public void EditStats(bool edit)
-    {
-        _editingStats = edit;
-
-        UpdateView();
     }
 
     public void DisplayInfoForTurret(Turret turret)
@@ -130,16 +103,10 @@ public class TurretInfo : MonoBehaviour
         _statRange.text = _turret.StatRange.ToString();
         _statRomance.text = _turret.StatRomance.ToString();
 
-        if (_turret.AvailableStatPoints <= 0)
-        {
-            // disable stat buttons
-            _editingStats = false;
-        }
-
-        // _confirmStatButton.gameObject.SetActive(_editingStats);
         foreach (TurretInfoStat statInteractable in _statInteractables)
         {
-            statInteractable.ShowEditButtons(_editingStats);
+            bool editingStats = (_turret.AvailableStatPoints > 0);
+            statInteractable.ShowEditButtons(_turret.AvailableStatPoints > 0);
 
             switch (statInteractable.StatType)
             {
@@ -162,19 +129,6 @@ public class TurretInfo : MonoBehaviour
                     Debug.LogError("Unhandled StatType \"" + statInteractable.StatType + "\"");
                     break;
             }
-        }
-
-        // update promt text
-        _statsPromtText.gameObject.SetActive(_turret.AvailableStatPoints > 0 && !_editingStats);
-
-        // update cursor
-        if (_editingStats)
-        {
-            CursorManager.SetCursorState(CursorLockMode.None);
-        }
-        else
-        {
-            CursorManager.SetCursorState(CursorLockMode.Locked);
         }
     }
 
