@@ -7,15 +7,20 @@ public class CameraControls : MonoBehaviour
     private Quaternion cameraRotation;
 
     private const float ClosestAngle = 20f;
-    private const float FurthestAngle = 50f;
+    private const float FurthestAngle = 60f;
     private const float ClosestDistanceFromLookAtPosition = 16f;
-    private const float FurthestDistanceFromLookAtPosition = 36f;
+    private const float FurthestDistanceFromLookAtPosition = 50f;
 
-    private const float CameraPanAcceleration = 0.4f;
-    private const float CameraPanDeceleration = 2f;
-    private const float CameraPanMaxVelocity = 4f;
-    private const float CameraZoomAcceleration = 0.5f;
-    private const float CameraZoomDeceleration = 0.125f;
+    private const float CameraPanXRange = 80f;
+    private const float CameraPanZRange = 80f;
+
+    private const float CameraPanAcceleration = 10f;
+    private const float CameraPanDeceleration = 12f;
+    private const float CameraPanMaxVelocity = 30f;
+
+    private const float CameraZoomAcceleration = 8f;
+    private const float CameraZoomDeceleration = 2f;
+    private const float CameraZoomMaxVelocity = 10f;
 
     private float _zoomVelocity = 0f;
     private float _zoomValue = 0.3f;
@@ -52,7 +57,31 @@ public class CameraControls : MonoBehaviour
             _velocity.z = Mathf.MoveTowards(_velocity.z, 0, decelerationMaxDelta);
         }
 
-        _lookAtPosition += _velocity;
+        _lookAtPosition += _velocity * Time.deltaTime;
+
+        // halt velocity if camera hits max X pan range
+        if (_lookAtPosition.x <= -CameraPanXRange)
+        {
+            _velocity.x = Mathf.Clamp(_velocity.x, 0, CameraPanMaxVelocity);
+        }
+        else if (_lookAtPosition.x >= CameraPanXRange)
+        {
+            _velocity.x = Mathf.Clamp(_velocity.x, -CameraPanMaxVelocity, 0);
+        }
+
+        // halt velocity if camera hits max Z pan range
+        if (_lookAtPosition.z <= -CameraPanXRange)
+        {
+            _velocity.z = Mathf.Clamp(_velocity.z, 0, CameraPanMaxVelocity);
+        }
+        else if (_lookAtPosition.z >= CameraPanXRange)
+        {
+            _velocity.z = Mathf.Clamp(_velocity.z, -CameraPanMaxVelocity, 0);
+        }
+
+        // clamp position
+        _lookAtPosition.x = Mathf.Clamp(_lookAtPosition.x, -CameraPanXRange, CameraPanXRange);
+        _lookAtPosition.z = Mathf.Clamp(_lookAtPosition.z, -CameraPanZRange, CameraPanZRange);
 
         // update zoom value
         _zoomVelocity += Input.mouseScrollDelta.y * CameraZoomAcceleration * Time.deltaTime;
@@ -60,7 +89,25 @@ public class CameraControls : MonoBehaviour
         {
             _zoomVelocity = Mathf.MoveTowards(_zoomVelocity, 0, CameraZoomDeceleration * Time.deltaTime);
         }
-        _zoomValue = Mathf.Clamp01(_zoomValue + _zoomVelocity);
+
+        // clamp zoom value
+        if (_zoomValue <= 0)
+        {
+            _zoomValue = 0;
+            // halt further negative velocity
+            _zoomVelocity = Mathf.Clamp(_zoomVelocity, 0, CameraZoomMaxVelocity);
+        }
+        else if (_zoomValue >= 1)
+        {
+            _zoomValue = 1;
+            // halt further positive velocity
+            _zoomVelocity = Mathf.Clamp(_zoomVelocity, -CameraZoomMaxVelocity, 0);
+        }
+
+        // clamp velocity within max acceptable velocity
+        _zoomVelocity = Mathf.Clamp(_zoomVelocity, -CameraZoomMaxVelocity, CameraZoomMaxVelocity);
+
+        _zoomValue = Mathf.Clamp01(_zoomValue + _zoomVelocity * Time.deltaTime);
 
         // apply updated position and zoom values
         PositionCamera();
