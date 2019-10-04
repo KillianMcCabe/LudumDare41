@@ -17,8 +17,6 @@ public class Turret : MonoBehaviour
     public System.Action OnDeath;
     public System.Action OnChange; // e.g. found like / dislike, gained stats etc
 
-    private const float FlirtCD = 10;
-
     private int _level = 1;
     public int Level
     {
@@ -61,7 +59,6 @@ public class Turret : MonoBehaviour
 
     public string Name {get; set;}
     public int AvailableStatPoints {get; set;} = 0;
-    public bool IsFlirtable {get; private set;} = false;
     public bool HasFullHealth {get; private set;} = false;
     public bool isAlive {get; private set;} = true;
     public bool FoundLike {get; private set;} = false;
@@ -69,8 +66,6 @@ public class Turret : MonoBehaviour
 
     public string Likes {get; set;}
     public string Dislikes {get; set;}
-
-    private float _timeSinceFlirted = 0;
 
     public float health
     {
@@ -170,14 +165,14 @@ public class Turret : MonoBehaviour
         {
             AvailableStatPoints += 4;
             Instantiate(receivedGoodGiftParticleEffect, transform.position, Quaternion.identity);
-            GameController.instance.DisplayHint("That was the perfect gift for that tower!");
+            GameController.Instance.DisplayHint("That was the perfect gift for that tower!");
             FoundLike = true;
         }
         else if (item.Label == Dislikes)
         {
             AvailableStatPoints += 0;
             Instantiate(receivedBadGiftParticleEffect, transform.position, Quaternion.identity);
-            GameController.instance.DisplayHint("I don't think that was the right gift for that tower");
+            GameController.Instance.DisplayHint("I don't think that was the right gift for that tower");
             FoundDislike = true;
         }
         else
@@ -262,12 +257,6 @@ public class Turret : MonoBehaviour
             gunEffect.SetActive(false);
             FindClosestTargetWithinRange();
         }
-
-        _timeSinceFlirted += Time.deltaTime;
-        if (_timeSinceFlirted > FlirtCD)
-        {
-            IsFlirtable = true;
-        }
     }
 
     private void LateUpdate()
@@ -280,8 +269,6 @@ public class Turret : MonoBehaviour
     {
         health += CalculateFlirtHealthGain();
         Instantiate(flirtParticleEffect, transform.position, Quaternion.identity);
-        IsFlirtable = false;
-        _timeSinceFlirted = 0;
     }
 
     public void AddAccessory(GameObject accessory)

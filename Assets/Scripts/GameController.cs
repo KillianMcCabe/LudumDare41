@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
     private const float TimeBetweenWaves = 11;
     private const float SpawnAreaRadius = 8;
 
-    public static GameController instance = null;
+    public static GameController Instance = null;
 
     [SerializeField]
     public Robot _robotPrefab = null;
@@ -37,15 +37,6 @@ public class GameController : MonoBehaviour
     [Header("External components")]
 
     [SerializeField]
-    private GameObject _giveGiftInputHint = null;
-
-    [SerializeField]
-    private GameObject _throwGiftInputHint = null;
-
-    [SerializeField]
-    private GameObject _flirtInputHint = null;
-
-    [SerializeField]
     private Text waveCountText = null;
 
     [SerializeField]
@@ -70,6 +61,15 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private GameObject _pauseScreen = null;
 
+    [SerializeField]
+    private AbilityData _flirtAbilityData = null;
+
+    [SerializeField]
+    private AbilityData _giveAbilityData = null;
+
+    [SerializeField]
+    private AbilityData _throwAbilityData = null;
+
     [Header ("Prefabs references")]
 
     [SerializeField]
@@ -82,7 +82,7 @@ public class GameController : MonoBehaviour
     private GameObject level3Enemy = null;
 
     private GameObject hint = null;
-    private Robot _robot = null;
+    public Robot Robot { get; private set; }
 
     int enemyCount;
     public int EnemyCount
@@ -124,9 +124,9 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {
@@ -141,7 +141,11 @@ public class GameController : MonoBehaviour
         }
 
         hint = Resources.Load("Prefabs/Hint_Text") as GameObject;
-        _robot = Instantiate(_robotPrefab, Vector3.zero, Quaternion.identity);
+        Robot = Instantiate(_robotPrefab, Vector3.zero, Quaternion.identity);
+
+        _flirtAbilityData.OnAbilityActivated += HandleFlirtActivation;
+        _giveAbilityData.OnAbilityActivated += HandleGiveActivation;
+        _throwAbilityData.OnAbilityActivated += HandleThrowActivation;
     }
 
     private void Start()
@@ -184,7 +188,7 @@ public class GameController : MonoBehaviour
         {
             if (turret.isAlive)
             {
-                float dist = Vector3.Distance(_robot.transform.position, turret.transform.position);
+                float dist = Vector3.Distance(Robot.transform.position, turret.transform.position);
                 if (dist < closestTurretDist)
                 {
                     closestTurret = turret;
@@ -209,7 +213,7 @@ public class GameController : MonoBehaviour
                 // TODO: instantiate prefab to show where Robot is moving to
                 Instantiate(_movementMarkerPrefab, position, Quaternion.identity);
 
-                _robot.MoveTo(position);
+                Robot.MoveTo(position);
             }
         }
 
@@ -223,10 +227,6 @@ public class GameController : MonoBehaviour
         {
             _turretInfo.Hide();
         }
-
-        _throwGiftInputHint.SetActive(_robot.GiftHeld);
-        _flirtInputHint.SetActive(_robot.TurretInInteractionRange != null && _robot.TurretInInteractionRange.IsFlirtable && !_robot.TurretInInteractionRange.HasFullHealth);
-        _giveGiftInputHint.SetActive(_robot.TurretInInteractionRange != null && _robot.GiftHeld);
     }
 
     public void Resume()
@@ -351,5 +351,27 @@ public class GameController : MonoBehaviour
     private void HandleTurretDeath()
     {
         CheckIfGameOver();
+    }
+
+    private void HandleFlirtActivation()
+    {
+        if (Robot.TurretInInteractionRange != null)
+        {
+            Robot.TurretInInteractionRange.Flirt();
+        }
+        else
+        {
+            Debug.LogWarning("TurretInInteractionRange is null!");
+        }
+    }
+
+    private void HandleGiveActivation()
+    {
+        Robot.GiveGift();
+    }
+
+    private void HandleThrowActivation()
+    {
+        Robot.ThrowCurrentlyHeldItem();
     }
 }

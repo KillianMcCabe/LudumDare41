@@ -40,7 +40,7 @@ public class Enemy : MonoBehaviour
 
                 if (Random.Range(0f, 1f) < ChanceToDropItem)
                 {
-                    GameObject randomGift = GameController.instance.gifts[Random.Range(0, GameController.instance.gifts.Length)].gameObject;
+                    GameObject randomGift = GameController.Instance.gifts[Random.Range(0, GameController.Instance.gifts.Length)].gameObject;
                     Instantiate(randomGift, transform.position, Random.rotation);
                 }
 
@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour
     {
         float closestDist = 10000;
 
-        foreach (Turret t in GameController.instance.turrets)
+        foreach (Turret t in GameController.Instance.turrets)
         {
             if (t.isAlive)
             {
@@ -120,8 +120,8 @@ public class Enemy : MonoBehaviour
     private void Death()
     {
         Destroy(gameObject);
-        GameController.instance.EnemyCount--;
-        GameController.instance.CheckIfGameOver();
+        GameController.Instance.EnemyCount--;
+        GameController.Instance.CheckIfGameOver();
     }
 
     protected virtual void Move(Vector3 desiredVelocity)

@@ -27,7 +27,7 @@ public class Robot : MonoBehaviour
     private Vector3 _movement = Vector3.zero;
 
     public Turret TurretInInteractionRange {get; private set;} = null;
-    public Item GiftHeld  {get; private set;} = null;
+    public Item HoldingItem {get; private set;} = null;
 
     private Animator _animator;
 
@@ -57,7 +57,7 @@ public class Robot : MonoBehaviour
 
         // find closest turret within interactable range
         TurretInInteractionRange = null;
-        foreach (Turret t in GameController.instance.turrets)
+        foreach (Turret t in GameController.Instance.turrets)
         {
             if (t.isAlive && Vector3.Distance(transform.position, t.transform.position) < InteractionRange)
             {
@@ -66,8 +66,7 @@ public class Robot : MonoBehaviour
             }
         }
 
-        HandleActionInputs();
-        _animator.SetBool("itemHeld", GiftHeld != null);
+        _animator.SetBool("itemHeld", HoldingItem != null);
     }
 
     public void MoveTo(Vector3 position)
@@ -78,41 +77,44 @@ public class Robot : MonoBehaviour
         }
     }
 
-    void HandleActionInputs()
+    public void GiveGift()
     {
-        if (Input.GetButtonDown("DropItem") && GiftHeld != null)
+        if (TurretInInteractionRange == null)
         {
-            Vector3 throwVector = Quaternion.AngleAxis(ThrowItemAngle, transform.right) * transform.forward;
-            GiftHeld.Throw(throwVector * ThrowItemForce);
-            GiftHeld = null;
-
-            if (_itemsOverlapping.Count > 0)
-            {
-                Item item = _itemsOverlapping[0];
-                Debug.Log("found " + item.Label + " at feet");
-                PickedUpItem(item);
-                _itemsOverlapping.RemoveAt(0);
-            }
+            Debug.LogWarning("TurretInInteractionRange is null!");
+            return;
+        }
+        if (HoldingItem == null)
+        {
+            Debug.LogWarning("HoldingItem is null!");
+            return;
         }
 
-        if (TurretInInteractionRange != null)
-        {
-            if (Input.GetButtonDown("Interact") && GiftHeld != null)
-            {
-                TurretInInteractionRange.GiveItem(GiftHeld);
-                Destroy(GiftHeld.gameObject);
-                GiftHeld = null;
+        TurretInInteractionRange.GiveItem(HoldingItem);
+        Destroy(HoldingItem.gameObject);
+        HoldingItem = null;
 
-                if (_itemsOverlapping.Count > 0)
-                {
-                    PickedUpItem(_itemsOverlapping[0]);
-                    _itemsOverlapping.RemoveAt(0);
-                }
-            }
-            if (Input.GetButtonDown("Flirt") && TurretInInteractionRange.IsFlirtable && !TurretInInteractionRange.HasFullHealth)
-            {
-                TurretInInteractionRange.Flirt();
-            }
+        CheckForItemUnderFeet();
+    }
+
+    public void ThrowCurrentlyHeldItem()
+    {
+        Vector3 throwVector = Quaternion.AngleAxis(ThrowItemAngle, transform.right) * transform.forward;
+        HoldingItem.Throw(throwVector * ThrowItemForce);
+        HoldingItem = null;
+
+        CheckForItemUnderFeet();
+    }
+
+    /// <summary>
+    /// Pick up an item if currently overlapping an item
+    /// </summary>
+    private void CheckForItemUnderFeet()
+    {
+        if (_itemsOverlapping.Count > 0)
+        {
+            PickedUpItem(_itemsOverlapping[0]);
+            _itemsOverlapping.RemoveAt(0);
         }
     }
 
@@ -127,10 +129,10 @@ public class Robot : MonoBehaviour
 
     private void PickedUpItem(Item item)
     {
-        GiftHeld = item;
-        GiftHeld.IsHeld = true;
-        GiftHeld.transform.SetParent(giftHoldTransform, false);
-        GiftHeld.transform.localPosition = new Vector3(0, 0, 0);
+        HoldingItem = item;
+        HoldingItem.IsHeld = true;
+        HoldingItem.transform.SetParent(giftHoldTransform, false);
+        HoldingItem.transform.localPosition = new Vector3(0, 0, 0);
     }
 
     void OnTriggerEnter(Collider other)
@@ -143,7 +145,7 @@ public class Robot : MonoBehaviour
         }
         else if (other.gameObject.tag == "Gift")
         {
-            if (GiftHeld == null)
+            if (HoldingItem == null)
             {
                 Item item = other.gameObject.GetComponent<Item>();
                 if (item.CanBePickedUp)

@@ -3,7 +3,11 @@ guid: ecea9933579d2a74d9313ca77f85d17e
 TextureImporter:
   fileIDToRecycleName:
     21300000: UI_Turret
-    21300002: UI_Key
+    21300002: UI_SmallFrame
+    21300004: UI_SmallFrame_Background
+    21300006: UI_AbilityIcon_Flirt
+    21300008: UI_GiveGift
+    21300010: UI_Throw
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -117,7 +121,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Key
+      name: UI_SmallFrame
       rect:
         serializedVersion: 2
         x: 0
@@ -132,6 +136,86 @@ TextureImporter:
       tessellationDetail: 0
       bones: []
       spriteID: 605ff5e6e7f8f6540bc851feb3c3baad
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_SmallFrame_Background
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 1664
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96450eaf140be91448e87b9411fe1d00
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_AbilityIcon_Flirt
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1536
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 52a9cb814e11b15408e3b2aec4b2992c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_GiveGift
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 1536
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50fb6654ae6a737438b8a766e9e989fa
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Throw
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 1536
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0d90bd013830be45b5391efc7f801df
       vertices: []
       indices: 
       edges: []

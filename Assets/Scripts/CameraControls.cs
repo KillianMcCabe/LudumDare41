@@ -14,8 +14,8 @@ public class CameraControls : MonoBehaviour
     private const float CameraPanXRange = 80f;
     private const float CameraPanZRange = 80f;
 
-    private const float CameraPanAcceleration = 10f;
-    private const float CameraPanDeceleration = 12f;
+    private const float CameraPanAcceleration = 16f;
+    private const float CameraPanDeceleration = 20f;
     private const float CameraPanMaxVelocity = 30f;
 
     private const float CameraZoomAcceleration = 8f;
@@ -30,7 +30,7 @@ public class CameraControls : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        if (GameController.instance.GamePaused)
+        if (GameController.Instance.GamePaused)
         {
             return;
         }
