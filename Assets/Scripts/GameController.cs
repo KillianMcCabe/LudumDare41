@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class GameController : MonoBehaviour
 {
@@ -197,23 +198,27 @@ public class GameController : MonoBehaviour
             }
         }
 
-        // check if player clicked mouse
+        // Check if player clicked mouse
         if (Input.GetMouseButtonDown(0))
         {
-            int layerMask = 1 << LayerMask.NameToLayer("Terrain");
-
-            //create a ray cast and set it to the mouses cursor position in game
-            Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-            RaycastHit hit;
-            float distance = 100;
-            if (Physics.Raycast (ray, out hit, distance, layerMask))
+            // Check if the mouse was clicked over a UI element
+            if (!EventSystem.current.IsPointerOverGameObject())
             {
-                Vector3 position = hit.point;
+                int layerMask = 1 << LayerMask.NameToLayer("Terrain");
 
-                // TODO: instantiate prefab to show where Robot is moving to
-                Instantiate(_movementMarkerPrefab, position, Quaternion.identity);
+                // Ray cast to the mouse cursor position
+                Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+                RaycastHit hit;
+                float distance = 100;
+                if (Physics.Raycast (ray, out hit, distance, layerMask))
+                {
+                    Vector3 position = hit.point;
 
-                Robot.MoveTo(position);
+                    // Instantiate prefab to display where Robot is moving to
+                    Instantiate(_movementMarkerPrefab, position, Quaternion.identity);
+
+                    Robot.MoveTo(position);
+                }
             }
         }
 
