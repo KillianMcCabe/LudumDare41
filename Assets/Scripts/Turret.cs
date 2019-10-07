@@ -28,7 +28,7 @@ public class Turret : MonoBehaviour
 
     private Dictionary<StatData, int> _statLevels = new Dictionary<StatData, int>();
 
-    private float _health = 100;
+    private float _health = 0;
 
     private Enemy target;
 
@@ -53,22 +53,30 @@ public class Turret : MonoBehaviour
     public string Likes {get; set;}
     public string Dislikes {get; set;}
 
-    public float health
+    public float MaxHealth { get; private set; } = 0;
+
+    public float Health
     {
         get { return _health; }
         set
         {
             _health = value;
-            
-            float maxHealth = CalculateMaxHealth();
-            if (_health > maxHealth)
+
+            if (_health > MaxHealth)
             {
-                _health = maxHealth;
+                _health = MaxHealth;
             }
 
-            HasFullHealth = _health == maxHealth;
+            HasFullHealth = _health == MaxHealth;
 
-            healthIndicator.transform.localScale = new Vector3(_health / maxHealth, 1, 1);
+            if (!float.IsNaN(_health))
+                healthIndicator.transform.localScale = new Vector3(_health / MaxHealth, 1, 1);
+
+            if (OnChange != null)
+            {
+                OnChange.Invoke();
+            }
+
             if (_health < 0)
             {
                 isAlive = false;
@@ -101,6 +109,9 @@ public class Turret : MonoBehaviour
     {
         FindClosestTargetWithinRange();
         gunEffect.SetActive(false);
+
+        RecalculateMaxHealth();
+        _health = MaxHealth;
     }
 
     private float CalculateDPS()
@@ -122,11 +133,17 @@ public class Turret : MonoBehaviour
         return 30f + (GetStatLevel(StatData.GetRomanceStatData()) * 5f);
     }
 
-    private float CalculateMaxHealth()
+    private void RecalculateMaxHealth()
     {
-        const float BaseHP = 100f;
+        const float BaseHP = 90f;
         const float HPPerFortitudeLevel = 10f;
-        return BaseHP + (GetStatLevel(StatData.GetFortitudeStatData()) * HPPerFortitudeLevel);
+
+        float prevMaxHealth = MaxHealth;
+        MaxHealth = BaseHP + (GetStatLevel(StatData.GetFortitudeStatData()) * HPPerFortitudeLevel);
+
+        float proportionalHealthChange = MaxHealth / prevMaxHealth;
+
+        Health = Health * proportionalHealthChange;
     }
 
     private float CalculateTurnSpeed()
@@ -136,7 +153,7 @@ public class Turret : MonoBehaviour
 
     private float CalculateHealthRegenRate()
     {
-        return (CalculateMaxHealth() / 100f); // 1% of max hp
+        return (MaxHealth / 100f); // 1% of max hp
     }
 
     void FindClosestTargetWithinRange()
@@ -188,6 +205,8 @@ public class Turret : MonoBehaviour
 
     private void Update()
     {
+        RecalculateMaxHealth();
+
         if (target != null && target.isAlive)
         {
             // Turn towards target
@@ -237,7 +256,7 @@ public class Turret : MonoBehaviour
 
     public void Flirt()
     {
-        health += CalculateFlirtHealthGain();
+        Health += CalculateFlirtHealthGain();
         Instantiate(flirtParticleEffect, transform.position, Quaternion.identity);
     }
 

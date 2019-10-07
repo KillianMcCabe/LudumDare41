@@ -12,6 +12,12 @@ public class TurretInfo : MonoBehaviour
     private Text _level = null;
 
     [SerializeField]
+    private Text _hp = null;
+
+    [SerializeField]
+    private Image _hpImage = null;
+
+    [SerializeField]
     private Text _likes = null;
 
     [SerializeField]
@@ -86,6 +92,8 @@ public class TurretInfo : MonoBehaviour
 
         _name.text = _turret.Name;
         _level.text = "Lv. " + _turret.Level.ToString();
+        _hp.text = $"Hp: {Mathf.Ceil(_turret.Health)} / {Mathf.Ceil(_turret.MaxHealth)}";
+        _hpImage.fillAmount = Mathf.Ceil(_turret.Health) / Mathf.Ceil(_turret.MaxHealth);
 
         _likes.text = _turret.FoundLike ? _turret.Likes : "???";
         _dislikes.text = _turret.FoundDislike ? _turret.Dislikes : "???";

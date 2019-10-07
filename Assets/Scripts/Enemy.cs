@@ -133,7 +133,7 @@ public class Enemy : MonoBehaviour
     {
         if (t != null)
         {
-            t.health -= damage;
+            t.Health -= damage;
         }
         else
         {

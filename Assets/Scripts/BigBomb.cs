@@ -28,7 +28,7 @@ public class BigBomb : Enemy
         {
             if (eatingTurret.isAlive)
             {
-                eatingTurret.health -= dps * Time.deltaTime;
+                eatingTurret.Health -= dps * Time.deltaTime;
             }
             else
             {
