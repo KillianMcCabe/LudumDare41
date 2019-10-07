@@ -7,9 +7,9 @@ public class CameraControls : MonoBehaviour
     private Quaternion cameraRotation;
 
     private const float ClosestAngle = 20f;
-    private const float FurthestAngle = 60f;
+    private const float FurthestAngle = 64f;
     private const float ClosestDistanceFromLookAtPosition = 16f;
-    private const float FurthestDistanceFromLookAtPosition = 50f;
+    private const float FurthestDistanceFromLookAtPosition = 56f;
 
     private const float CameraPanXRange = 80f;
     private const float CameraPanZRange = 80f;
@@ -23,7 +23,7 @@ public class CameraControls : MonoBehaviour
     private const float CameraZoomMaxVelocity = 10f;
 
     private float _zoomVelocity = 0f;
-    private float _zoomValue = 0.3f;
+    private float _zoomValue = 0.25f;
     private Vector3 _lookAtPosition = Vector3.zero;
     private Vector3 _velocity = Vector3.zero;
 

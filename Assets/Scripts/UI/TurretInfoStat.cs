@@ -1,24 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TurretInfoStat : MonoBehaviour
+public class TurretInfoStat : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    public System.Action<StatType, int> OnStatLevelChange;
+    public System.Action<StatData, int> OnStatLevelIncrease;
+
+    private StatData _statData = null;
+    public StatData StatData
+    {
+        get { return _statData; }
+    }
 
     [SerializeField]
-    private StatType _statType = StatType.Unknown;
-    public StatType StatType
-    {
-        get { return _statType; }
-    }
+    private Text _statNameText = null;
 
     [SerializeField]
     private Text _levelText = null;
 
     [SerializeField]
     private Button _increaseStatButton = null;
+
+    [SerializeField]
+    private UIHint _hint = null;
+
+    public void Init(StatData statData)
+    {
+        _statData = statData;
+        _statNameText.text = statData.Title;
+        _hint.Init(statData.Title, statData.Description);
+        _hint.gameObject.SetActive(false);
+    }
 
     public void ShowEditButtons(bool show)
     {
@@ -46,11 +60,19 @@ public class TurretInfoStat : MonoBehaviour
 
     private void HandleIncreaseStatButtonClick()
     {
-        StatLevel ++;
-
-        if (OnStatLevelChange != null)
+        if (OnStatLevelIncrease != null)
         {
-            OnStatLevelChange.Invoke(_statType, _statLevel);
+            OnStatLevelIncrease.Invoke(_statData, _statLevel);
         }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        _hint.gameObject.SetActive(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _hint.gameObject.SetActive(false);
     }
 }

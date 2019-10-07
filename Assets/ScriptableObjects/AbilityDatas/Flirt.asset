@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InputKey: Flirt
   InputCharacter: F
-  CooldownDuration: 8
+  CooldownDuration: 6
   Icon: {fileID: 21300006, guid: ecea9933579d2a74d9313ca77f85d17e, type: 3}
   AbilityDataRequirements: 01000000
   Title: Flirt
   Description: The nearest turret will gain health. The amount of health received
-    increases with the Romance level of the turret.
+    is increased by the Romance level of the turret.

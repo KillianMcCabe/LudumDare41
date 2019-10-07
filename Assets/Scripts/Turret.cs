@@ -23,24 +23,10 @@ public class Turret : MonoBehaviour
         get { return _level; }
     }
 
-    // TODO: create DpsBaseValue and DpsPerStatPoint
-    [System.NonSerialized]
-    public int StatRange = 1;
+    [SerializeField]
+    private StatData[] _statDatas = null;
 
-    [System.NonSerialized]
-    public int StatTurnSpeed = 1;
-
-    [System.NonSerialized]
-    public int StatDps = 1;
-
-    [System.NonSerialized]
-    public int StatFortitude = 1;
-
-    [System.NonSerialized]
-    public int StatRomance = 1;
-
-    public const float DpsBaseValue = 30f;
-    public const float DpsPerStatPoint = 6f;
+    private Dictionary<StatData, int> _statLevels = new Dictionary<StatData, int>();
 
     private float _health = 100;
 
@@ -103,6 +89,11 @@ public class Turret : MonoBehaviour
         receivedBadGiftParticleEffect = Resources.Load("Prefabs/ReceivedBadGiftParticleEffect") as GameObject;
 
         isAlive = true;
+
+        foreach (StatData stat in _statDatas)
+        {
+            _statLevels.Add(stat, 1);
+        }
     }
 
     // Use this for initialization
@@ -112,29 +103,35 @@ public class Turret : MonoBehaviour
         gunEffect.SetActive(false);
     }
 
-    private float CalculateFiringRange()
+    private float CalculateDPS()
     {
-        return 30f + (StatRange * 5f);
+        const float BaseDPS = 30f;
+        const float DPSPerDamageLevel = 5f;
+        return BaseDPS + (GetStatLevel(StatData.GetDamageStatData()) * DPSPerDamageLevel);
     }
 
-    private float CalculateDps()
+    private float CalculateFiringRange()
     {
-        return DpsBaseValue + (StatDps * DpsPerStatPoint);
+        const float BaseRange = 18f;
+        const float RangePerRangeLevel = 4f;
+        return BaseRange + (GetStatLevel(StatData.GetRangeStatData()) * RangePerRangeLevel);
     }
 
     private float CalculateFlirtHealthGain()
     {
-        return 30f + (StatRomance * 5f);
+        return 30f + (GetStatLevel(StatData.GetRomanceStatData()) * 5f);
     }
 
     private float CalculateMaxHealth()
     {
-        return 100f + (StatFortitude * 10f);
+        const float BaseHP = 100f;
+        const float HPPerFortitudeLevel = 10f;
+        return BaseHP + (GetStatLevel(StatData.GetFortitudeStatData()) * HPPerFortitudeLevel);
     }
 
     private float CalculateTurnSpeed()
     {
-        return 34f + (StatTurnSpeed * 6f);
+        return 34f + (GetStatLevel(StatData.GetMobilityStatData()) * 6f);
     }
 
     private float CalculateHealthRegenRate()
@@ -183,34 +180,6 @@ public class Turret : MonoBehaviour
 
         _level += AvailableStatPoints;
 
-        // randomly distribute stat points
-        // while (statPoints > 0)
-        // {
-        //     StatType statType = (StatType)Random.Range(0, System.Enum.GetValues(typeof(StatType)).Length);
-        //     switch (statType)
-        //     {
-        //         case StatType.Range:
-        //             StatRange ++;
-        //             break;
-        //         case StatType.Fortitude:
-        //             StatFortitude ++;
-        //             break;
-        //         case StatType.Speed:
-        //             StatTurnSpeed ++;
-        //             break;
-        //         case StatType.Damage:
-        //             StatDps ++;
-        //             break;
-        //         case StatType.Romance:
-        //             StatRomance ++;
-        //             break;
-        //         default:
-        //             Debug.LogError("Unhandled StatType \"" + statType + "\"");
-        //             break;
-        //     }
-        //     statPoints--;
-        // }
-
         if (OnChange != null)
         {
             OnChange.Invoke();
@@ -237,7 +206,8 @@ public class Turret : MonoBehaviour
                 if (Vector3.Dot(towardsTarget, transform.forward) > 0.9)
                 {
                     gunEffect.SetActive(true);
-                    target.TakeDamage(CalculateDps() * Time.deltaTime);
+
+                    target.TakeDamage(CalculateDPS() * Time.deltaTime);
                 }
                 else
                 {
@@ -294,28 +264,28 @@ public class Turret : MonoBehaviour
         Dislikes = label;
     }
 
-    public void ChangeStat(StatType statType, int level)
+    public int GetStatLevel(StatData statType)
     {
-        switch (statType)
+        if (_statLevels.ContainsKey(statType))
         {
-            case StatType.Range:
-                StatRange = level;
-                break;
-            case StatType.Fortitude:
-                StatFortitude = level;
-                break;
-            case StatType.Speed:
-                StatTurnSpeed = level;
-                break;
-            case StatType.Damage:
-                StatDps = level;
-                break;
-            case StatType.Romance:
-                StatRomance = level;
-                break;
-            default:
-                Debug.LogError("Unhandled StatType \"" + statType + "\"");
-                break;
+            return _statLevels[statType];
+        }
+        else
+        {
+            Debug.LogError("Unhandled StatType \"" + statType + "\"");
+            return -1;
+        }
+    }
+
+    public void SetStatLevel(StatData statType, int level)
+    {
+        if (_statLevels.ContainsKey(statType))
+        {
+            _statLevels[statType] = level;
+        }
+        else
+        {
+            Debug.LogError("Unhandled StatType \"" + statType + "\"");
         }
     }
 
