@@ -20,6 +20,8 @@ public class Enemy : MonoBehaviour
     protected float maxHealth = 100;
     public bool isAlive = true;
 
+    private Vector3 _prevTargetPosition = Vector3.zero;
+
     [SerializeField]
     private GameObject healthBarPrefab = null;
 
@@ -68,19 +70,20 @@ public class Enemy : MonoBehaviour
     {
         float closestDist = 10000;
 
-        foreach (Tower t in GameController.Instance.Turrets)
+        foreach (Tower tower in GameController.Instance.Turrets)
         {
-            if (t.isAlive)
+            if (tower.isAlive)
             {
-                float dist = Vector3.Distance(t.transform.position, transform.position);
+                float dist = Vector3.Distance(tower.transform.position, transform.position);
                 if (dist < closestDist)
                 {
-                    target = t.GetComponent<Tower>();
+                    target = tower;
                     closestDist = dist;
 
                     if (_agent != null)
                     {
                         _agent.SetDestination(target.transform.position);
+                        _prevTargetPosition = target.transform.position;
                     }
                     else
                     {
@@ -102,6 +105,17 @@ public class Enemy : MonoBehaviour
         if (target == null || !target.isAlive)
         {
             LocateNewTarget();
+        }
+        else
+        {
+            // check if target has moved
+            const float MinDistanceForDestinationChange = 1f;
+            if (Vector3.Distance(target.transform.position, _prevTargetPosition) > MinDistanceForDestinationChange)
+            {
+                // update pathing destination
+                _agent.SetDestination(target.transform.position);
+                _prevTargetPosition = target.transform.position;
+            }
         }
     }
 
