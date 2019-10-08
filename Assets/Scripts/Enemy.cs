@@ -8,7 +8,7 @@ public class Enemy : MonoBehaviour
 {
     private const float ChanceToDropItem = 0.4f;
 
-    protected Turret target;
+    protected Tower target;
     protected Rigidbody rb;
     private NavMeshAgent _agent = null;
 
@@ -20,10 +20,14 @@ public class Enemy : MonoBehaviour
     protected float maxHealth = 100;
     public bool isAlive = true;
 
-    GameObject explosionPrefab;
+    [SerializeField]
+    private GameObject healthBarPrefab = null;
+
+    [SerializeField]
+    private GameObject explosionPrefab = null;
 
     protected GameObject healthBar;
-    GameObject healthIndicator;
+    private GameObject healthIndicator;
 
     protected float health
     {
@@ -55,9 +59,7 @@ public class Enemy : MonoBehaviour
         distToGround = GetComponent<Collider>().bounds.extents.y;
         _agent = GetComponent<NavMeshAgent>();
 
-        explosionPrefab = Resources.Load("Prefabs/Boom") as GameObject;
-
-        healthBar = Instantiate(Resources.Load("Prefabs/HealthBar") as GameObject, Vector3.zero, Quaternion.identity, transform);
+        healthBar = Instantiate(healthBarPrefab, Vector3.zero, Quaternion.identity, transform);
         healthBar.transform.localPosition = new Vector3(0, 2, 0);
         healthIndicator = healthBar.transform.Find("Health").gameObject;
     }
@@ -66,14 +68,14 @@ public class Enemy : MonoBehaviour
     {
         float closestDist = 10000;
 
-        foreach (Turret t in GameController.Instance.Turrets)
+        foreach (Tower t in GameController.Instance.Turrets)
         {
             if (t.isAlive)
             {
                 float dist = Vector3.Distance(t.transform.position, transform.position);
                 if (dist < closestDist)
                 {
-                    target = t.GetComponent<Turret>();
+                    target = t.GetComponent<Tower>();
                     closestDist = dist;
 
                     if (_agent != null)
@@ -129,7 +131,7 @@ public class Enemy : MonoBehaviour
 
     }
 
-    protected virtual void Attack(Turret t)
+    protected virtual void Attack(Tower t)
     {
         if (t != null)
         {
@@ -155,7 +157,7 @@ public class Enemy : MonoBehaviour
     {
         if (other.gameObject.tag == "Friendly")
         {
-            Turret t = other.gameObject.GetComponent<Turret>();
+            Tower t = other.gameObject.GetComponent<Tower>();
             Attack(t);
         }
     }

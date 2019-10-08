@@ -16,7 +16,7 @@ public class GameController : MonoBehaviour
     public Robot _robotPrefab = null;
 
     [SerializeField]
-    public Turret _towerPrefab = null;
+    public Tower _towerPrefab = null;
 
     [SerializeField]
     Transform[] turretPositions = null;
@@ -25,9 +25,9 @@ public class GameController : MonoBehaviour
     public MovementMarker _movementMarkerPrefab = null;
 
     [SerializeField]
-    public TurretInfo _turretInfo = null;
+    public TowerInfo _turretInfo = null;
 
-    public List<Turret> Turrets {get; set;} = new List<Turret>();
+    public List<Tower> Turrets {get; set;} = new List<Tower>();
 
     public GameObject[] accessories;
     public Item[] gifts;
@@ -87,7 +87,9 @@ public class GameController : MonoBehaviour
     [SerializeField]
     private GameObject level3Enemy = null;
 
-    private GameObject hint = null;
+    [SerializeField]
+    private GameObject _gameMessagePrefab = null;
+
     public Robot Robot { get; private set; }
 
     private Mob _controlledMob = null;
@@ -142,9 +144,6 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        // TODO: remove Resources.Load usages
-        hint = Resources.Load("Prefabs/Hint_Text") as GameObject;
-
         // spawn Robot
         Robot = Instantiate(_robotPrefab, Vector3.zero, Quaternion.identity);
         _controlledMob = Robot;
@@ -167,7 +166,7 @@ public class GameController : MonoBehaviour
         // setup turrets
         foreach (Transform t in turretPositions)
         {
-            Turret turret = Instantiate(_towerPrefab, t.position, t.rotation);
+            Tower turret = Instantiate(_towerPrefab, t.position, t.rotation);
             turret.OnDeath += HandleTurretDeath;
 
             Turrets.Add(turret);
@@ -198,9 +197,9 @@ public class GameController : MonoBehaviour
         }
 
         // Get closest turret to Player
-        Turret closestTurret = null;
+        Tower closestTurret = null;
         float closestTurretDist = float.MaxValue;
-        foreach (Turret turret in Turrets)
+        foreach (Tower turret in Turrets)
         {
             if (turret.isAlive)
             {
@@ -293,14 +292,14 @@ public class GameController : MonoBehaviour
 
     public void DisplayHint(string text)
     {
-        GameObject go = Instantiate(hint);
+        GameObject go = Instantiate(_gameMessagePrefab);
         go.GetComponent<Text>().text = text;
         go.transform.SetParent(_messageUIPanel, false);
     }
 
     public void CheckIfGameOver()
     {
-        foreach (Turret t in Turrets)
+        foreach (Tower t in Turrets)
         {
             if (t.isAlive)
             {

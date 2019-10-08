@@ -9,6 +9,9 @@ public class Item : MonoBehaviour
     private const float ItemGlowEffectYPosition = 0.25f;
 
     [SerializeField]
+    private GameObject _itemGlowEffectPrefab = null;
+
+    [SerializeField]
     private string _label = "";
     public string Label
     {
@@ -55,7 +58,7 @@ public class Item : MonoBehaviour
         _rb = GetComponent<Rigidbody>();
         _collider = GetComponent<Collider>();
 
-        _itemGlowEffect = Instantiate(Resources.Load("Prefabs/ItemGlow"), gameObject.transform) as GameObject;
+        _itemGlowEffect = Instantiate(_itemGlowEffectPrefab, gameObject.transform) as GameObject;
         _itemGlowEffect.transform.position = new Vector3(transform.position.x, ItemGlowEffectYPosition, transform.position.z);
     }
 

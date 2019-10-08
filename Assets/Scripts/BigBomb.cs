@@ -11,7 +11,7 @@ public class BigBomb : Enemy
     float turnSpeed = 32;
     float dps = 20;
 
-    Turret eatingTurret = null;
+    Tower eatingTurret = null;
     bool wasGroundedLastUpdate = false;
 
     void Start()
@@ -70,7 +70,7 @@ public class BigBomb : Enemy
         timeSinceJumped += Time.deltaTime;
     }
 
-    protected override void Attack(Turret t)
+    protected override void Attack(Tower t)
     {
         eatingTurret = t;
     }

@@ -23,7 +23,7 @@ public class Robot : Mob
     private Vector3 _impact = Vector3.zero;
     private Vector3 _movement = Vector3.zero;
 
-    public Turret TurretInInteractionRange {get; private set;} = null;
+    public Tower TurretInInteractionRange {get; private set;} = null;
     public Item HoldingItem {get; private set;} = null;
 
     private Animator _animator;
@@ -55,7 +55,7 @@ public class Robot : Mob
 
         // find closest turret within interactable range
         TurretInInteractionRange = null;
-        foreach (Turret t in GameController.Instance.Turrets)
+        foreach (Tower t in GameController.Instance.Turrets)
         {
             if (t.isAlive && Vector3.Distance(transform.position, t.transform.position) < InteractionRange)
             {
