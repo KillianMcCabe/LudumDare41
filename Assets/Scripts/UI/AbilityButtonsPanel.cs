@@ -5,7 +5,7 @@ using UnityEngine;
 public class AbilityButtonsPanel : MonoBehaviour
 {
     [SerializeField]
-    private AbilityData[] abilities;
+    private AbilityData[] abilities = null;
 
     [SerializeField]
     private AbilityButton _abilityButtonPrefab = null;

@@ -2,19 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum StatType
+public class Turret : Mob
 {
-    Unknown,
-    Range,
-    Speed,
-    Damage,
-    Fortitude,
-    Romance
-}
-
-public class Turret : MonoBehaviour
-{
-    public System.Action OnDeath;
     public System.Action OnChange; // e.g. found like / dislike, gained stats etc
 
     private int _level = 1;
@@ -89,8 +78,10 @@ public class Turret : MonoBehaviour
         }
     }
 
-    void Awake()
+    public override void Awake()
     {
+        base.Awake();
+
         flirtParticleEffect = Resources.Load("Prefabs/FlirtParticleEffect") as GameObject;
         receivedGiftParticleEffect = Resources.Load("Prefabs/ReceivedGiftParticleEffect") as GameObject;
         receivedGoodGiftParticleEffect = Resources.Load("Prefabs/ReceivedGoodGiftParticleEffect") as GameObject;
@@ -217,10 +208,14 @@ public class Turret : MonoBehaviour
 
             if (Vector3.Dot(towardsTarget, transform.forward) > 0.9)
             {
+                // TODO: reimplement gun targetting
                 // Aim gun at target
-                Vector3 gunTowardsTarget = target.transform.position - gun.transform.position;
-                gunTowardsTarget.Normalize();
-                gun.transform.rotation = Quaternion.RotateTowards(gun.transform.rotation, Quaternion.LookRotation(gunTowardsTarget, Vector3.up), CalculateTurnSpeed() * Time.deltaTime);
+                // Vector3 gunTowardsTarget = target.transform.position - gun.transform.position;
+                // gunTowardsTarget.Normalize();
+                // gun.transform.rotation = Quaternion.RotateTowards(gun.transform.rotation, Quaternion.LookRotation(gunTowardsTarget, Vector3.up), CalculateTurnSpeed() * Time.deltaTime);
+
+                // // confine gun rotation
+                // gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, 0, 0);
 
                 if (Vector3.Dot(towardsTarget, transform.forward) > 0.9)
                 {
@@ -246,12 +241,6 @@ public class Turret : MonoBehaviour
             gunEffect.SetActive(false);
             FindClosestTargetWithinRange();
         }
-    }
-
-    private void LateUpdate()
-    {
-        // confine gun rotation
-        gun.transform.localEulerAngles = new Vector3(gun.transform.localEulerAngles.x, 0, 0);
     }
 
     public void Flirt()

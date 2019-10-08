@@ -9,30 +9,30 @@ public class AbilityButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     [Header("Ability Data")]
 
     [SerializeField]
-    private AbilityData _abilityData;
+    private AbilityData _abilityData = null;
 
     [Header("Sub-components")]
 
     [SerializeField]
-    private AbilityTimer _abilityCooldownTimer;
+    private AbilityTimer _abilityCooldownTimer = null;
 
     [SerializeField]
-    private GameObject _hint;
+    private GameObject _hint = null;
 
     [SerializeField]
-    private Image _iconImage;
+    private Image _iconImage = null;
 
     [SerializeField]
-    private Text _inputButtonText;
+    private Text _inputButtonText = null;
 
     [SerializeField]
-    private Text _titleText;
+    private Text _titleText = null;
 
     [SerializeField]
-    private Text _descriptionText;
+    private Text _descriptionText = null;
 
     [SerializeField]
-    private Button _button;
+    private Button _button = null;
 
     private bool _onCooldown = false;
 

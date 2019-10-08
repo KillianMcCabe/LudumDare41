@@ -1,10 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
-[RequireComponent(typeof(NavMeshAgent))]
-public class Robot : MonoBehaviour
+public class Robot : Mob
 {
     private const float MoveSpeed = 12f;
     private const float InteractionRange = 8f;
@@ -19,7 +17,6 @@ public class Robot : MonoBehaviour
 
     private Camera _cam = null;
     private Collider _collider = null;
-    private NavMeshAgent _agent = null;
 
     private List<Item> _itemsOverlapping;
 
@@ -32,12 +29,13 @@ public class Robot : MonoBehaviour
     private Animator _animator;
 
     // Use this for initialization
-    void Awake()
+    public override void Awake()
     {
+        base.Awake();
+
         _cam = Camera.main;
         _animator = GetComponent<Animator>();
         _collider = GetComponent<Collider>();
-        _agent = GetComponent<NavMeshAgent>();
 
         _itemsOverlapping = new List<Item>();
     }
@@ -57,7 +55,7 @@ public class Robot : MonoBehaviour
 
         // find closest turret within interactable range
         TurretInInteractionRange = null;
-        foreach (Turret t in GameController.Instance.turrets)
+        foreach (Turret t in GameController.Instance.Turrets)
         {
             if (t.isAlive && Vector3.Distance(transform.position, t.transform.position) < InteractionRange)
             {
@@ -67,14 +65,6 @@ public class Robot : MonoBehaviour
         }
 
         _animator.SetBool("itemHeld", HoldingItem != null);
-    }
-
-    public void MoveTo(Vector3 position)
-    {
-        if (_agent != null)
-        {
-            _agent.SetDestination(position);
-        }
     }
 
     public void GiveGift()

@@ -5,13 +5,13 @@ using UnityEngine.UI;
 
 public class AbilityTimer : MonoBehaviour
 {
-    public System.Action OnTimerEnd;
+    public System.Action OnTimerEnd = null;
 
     [SerializeField]
-    private Image _filledImage;
+    private Image _filledImage = null;
 
     [SerializeField]
-    private Text _timerText;
+    private Text _timerText = null;
 
     private float _time = 0;
     private float _duration = 0;

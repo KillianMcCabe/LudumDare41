@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour
     {
         float closestDist = 10000;
 
-        foreach (Turret t in GameController.Instance.turrets)
+        foreach (Turret t in GameController.Instance.Turrets)
         {
             if (t.isAlive)
             {

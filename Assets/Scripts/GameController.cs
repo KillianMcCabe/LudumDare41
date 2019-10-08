@@ -16,13 +16,18 @@ public class GameController : MonoBehaviour
     public Robot _robotPrefab = null;
 
     [SerializeField]
+    public Turret _towerPrefab = null;
+
+    [SerializeField]
+    Transform[] turretPositions = null;
+
+    [SerializeField]
     public MovementMarker _movementMarkerPrefab = null;
 
     [SerializeField]
     public TurretInfo _turretInfo = null;
 
-    [System.NonSerialized]
-    public Turret[] turrets;
+    public List<Turret> Turrets {get; set;} = new List<Turret>();
 
     public GameObject[] accessories;
     public Item[] gifts;
@@ -85,6 +90,8 @@ public class GameController : MonoBehaviour
     private GameObject hint = null;
     public Robot Robot { get; private set; }
 
+    private Mob _controlledMob = null;
+
     int enemyCount;
     public int EnemyCount
     {
@@ -135,15 +142,14 @@ public class GameController : MonoBehaviour
             return;
         }
 
-        turrets = GameObject.FindObjectsOfType<Turret>() as Turret[];
-        foreach (Turret turret in turrets)
-        {
-            turret.OnDeath += HandleTurretDeath;
-        }
-
+        // TODO: remove Resources.Load usages
         hint = Resources.Load("Prefabs/Hint_Text") as GameObject;
-        Robot = Instantiate(_robotPrefab, Vector3.zero, Quaternion.identity);
 
+        // spawn Robot
+        Robot = Instantiate(_robotPrefab, Vector3.zero, Quaternion.identity);
+        _controlledMob = Robot;
+
+        // Link ability handlers
         _flirtAbilityData.OnAbilityActivated += HandleFlirtActivation;
         _giveAbilityData.OnAbilityActivated += HandleGiveActivation;
         _throwAbilityData.OnAbilityActivated += HandleThrowActivation;
@@ -158,16 +164,25 @@ public class GameController : MonoBehaviour
         gifts = ShuffleArray(gifts);
         _turretNames = ShuffleArray(_turretNames);
 
+        // setup turrets
+        foreach (Transform t in turretPositions)
+        {
+            Turret turret = Instantiate(_towerPrefab, t.position, t.rotation);
+            turret.OnDeath += HandleTurretDeath;
+
+            Turrets.Add(turret);
+        }
+
         // Assign each turret an accessory, like and dislike, and name
-        for (var i = 0; i < turrets.Length && i < gifts.Length; i++)
+        for (var i = 0; i < Turrets.Count && i < gifts.Length; i++)
         {
             GameObject accessory = accessories[i];
-            turrets[i].AddAccessory(accessory);
+            Turrets[i].AddAccessory(accessory);
 
-            turrets[i].SetLike(gifts[i].Label);
-            turrets[i].SetDislike(gifts[(i + 1) % gifts.Length].Label);
+            Turrets[i].SetLike(gifts[i].Label);
+            Turrets[i].SetDislike(gifts[(i + 1) % gifts.Length].Label);
 
-            turrets[i].Name = _turretNames[i];
+            Turrets[i].Name = _turretNames[i];
         }
 
         enemyCount = 0;
@@ -185,7 +200,7 @@ public class GameController : MonoBehaviour
         // Get closest turret to Player
         Turret closestTurret = null;
         float closestTurretDist = float.MaxValue;
-        foreach (Turret turret in turrets)
+        foreach (Turret turret in Turrets)
         {
             if (turret.isAlive)
             {
@@ -198,8 +213,36 @@ public class GameController : MonoBehaviour
             }
         }
 
-        // Check if player clicked mouse
+        // Check if player clicked selection mouse button
         if (Input.GetMouseButtonDown(0))
+        {
+            // Check if the mouse was clicked over a UI element
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                int layerMask = 1 << LayerMask.NameToLayer("Mobs");
+
+                // Ray cast to the mouse cursor position
+                Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+                RaycastHit hit;
+                float distance = 100;
+                if (Physics.Raycast (ray, out hit, distance, layerMask))
+                {
+                    Mob mob = hit.transform.gameObject.GetComponent<Mob>();
+                    if (mob != null)
+                    {
+                        _controlledMob = mob;
+
+                        // update mob destroyed handler
+                        if (_controlledMob != null)
+                            _controlledMob.OnDeath -= HandleMobDeath;
+                        _controlledMob.OnDeath += HandleMobDeath;
+                    }
+                }
+            }
+        }
+
+        // Check if player clicked movement mouse button
+        if (Input.GetMouseButtonDown(1))
         {
             // Check if the mouse was clicked over a UI element
             if (!EventSystem.current.IsPointerOverGameObject())
@@ -214,10 +257,13 @@ public class GameController : MonoBehaviour
                 {
                     Vector3 position = hit.point;
 
-                    // Instantiate prefab to display where Robot is moving to
-                    Instantiate(_movementMarkerPrefab, position, Quaternion.identity);
+                    if (_controlledMob != null)
+                    {
+                        // Instantiate prefab to display where controlledMob is moving to
+                        Instantiate(_movementMarkerPrefab, position, Quaternion.identity);
 
-                    Robot.MoveTo(position);
+                        _controlledMob.MoveTo(position);
+                    }
                 }
             }
         }
@@ -254,7 +300,7 @@ public class GameController : MonoBehaviour
 
     public void CheckIfGameOver()
     {
-        foreach (Turret t in turrets)
+        foreach (Turret t in Turrets)
         {
             if (t.isAlive)
             {
@@ -378,5 +424,10 @@ public class GameController : MonoBehaviour
     private void HandleThrowActivation()
     {
         Robot.ThrowCurrentlyHeldItem();
+    }
+
+    private void HandleMobDeath()
+    {
+        _controlledMob = null;
     }
 }

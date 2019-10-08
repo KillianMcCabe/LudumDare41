@@ -1,20 +1,42 @@
 fileFormatVersion: 2
 guid: d790fc92f02209e41ad3d73a2542ec61
-timeCreated: 1524306058
-licenseType: Free
 ModelImporter:
-  serializedVersion: 22
+  serializedVersion: 23
   fileIDToRecycleName:
     100000: Body
     100002: Gun
     100004: Head
     100006: //RootNode
     100008: Turret_mergedObject
+    100010: Armature
+    100012: Head 1
+    100014: Head_end
+    100016: Root
+    100018: Wheel_BL
+    100020: Wheel_BL_end
+    100022: Wheel_BR
+    100024: Wheel_BR_end
+    100026: Wheel_FL
+    100028: Wheel_FL_end
+    100030: Wheel_FR
+    100032: Wheel_FR_end
     400000: Body
     400002: Gun
     400004: Head
     400006: //RootNode
     400008: Turret_mergedObject
+    400010: Armature
+    400012: Head 1
+    400014: Head_end
+    400016: Root
+    400018: Wheel_BL
+    400020: Wheel_BL_end
+    400022: Wheel_BR
+    400024: Wheel_BR_end
+    400026: Wheel_FL
+    400028: Wheel_FL_end
+    400030: Wheel_FR
+    400032: Wheel_FR_end
     2100000: Turret
     2300000: Body
     2300002: Gun
@@ -28,6 +50,13 @@ ModelImporter:
     4300002: Gun
     4300004: Head
     4300006: Body
+    7400000: Armature|GunAction
+    7400002: Armature|HeadAction
+    7400004: Armature|Identity
+    7400006: Armature|Transform
+    7400008: Armature|TransformToSiege
+    9500000: //RootNode
+    13700000: Head
   externalObjects: {}
   materials:
     importMaterials: 1
@@ -47,7 +76,8 @@ ModelImporter:
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
-    animationCompression: 1
+    importConstraints: 0
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -61,6 +91,7 @@ ModelImporter:
     globalScale: 1
     meshCompression: 0
     addColliders: 0
+    useSRGBMaterialColor: 1
     importVisibility: 1
     importBlendShapes: 1
     importCameras: 1
@@ -78,11 +109,16 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
     useFileScale: 1
+    previousCalculatedGlobalScale: 0.01
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
     tangentImportMode: 3
     normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
@@ -96,13 +132,12 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    rootMotionBoneName: Root
     hasTranslationDoF: 0
-    hasExtraRoot: 0
+    hasExtraRoot: 1
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 

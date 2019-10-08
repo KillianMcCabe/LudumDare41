@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4022953139874978}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: GiftTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 4026803316609792}
   - component: {fileID: 33316192069248604}
   - component: {fileID: 23077097372746000}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: L_Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -119,7 +119,7 @@ GameObject:
   - component: {fileID: 4642906802268244}
   - component: {fileID: 33889913296693444}
   - component: {fileID: 23742159715072734}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Head
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,7 +196,7 @@ GameObject:
   - component: {fileID: 4521638446219346}
   - component: {fileID: 33359795555916798}
   - component: {fileID: 23463013982662712}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: R_Arm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -273,7 +273,7 @@ GameObject:
   - component: {fileID: 4066263638305282}
   - component: {fileID: 33436153138271930}
   - component: {fileID: 23759824649809378}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -352,7 +352,7 @@ GameObject:
   - component: {fileID: 135685702420830988}
   - component: {fileID: 553839297}
   - component: {fileID: 553839293}
-  m_Layer: 9
+  m_Layer: 11
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
