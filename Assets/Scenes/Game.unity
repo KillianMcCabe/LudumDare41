@@ -23400,7 +23400,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23b6d332768354344922d3996406c714, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _robotPrefab: {fileID: 553839293, guid: 99d46b593f389094b9df12a15e079eee, type: 3}
+  _robotPrefab: {fileID: 5928240903378578835, guid: 99d46b593f389094b9df12a15e079eee,
+    type: 3}
   _towerPrefab: {fileID: 353358790, guid: cf64d927183fdb6469b70b97590d33c9, type: 3}
   turretPositions:
   - {fileID: 529713166}
