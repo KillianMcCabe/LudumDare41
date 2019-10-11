@@ -93,6 +93,23 @@ public class GameController : MonoBehaviour
     public Robot Robot { get; private set; }
 
     private Mob _controlledMob = null;
+    public Mob ControlledMob
+    {
+        get { return _controlledMob; }
+        set 
+        {
+            if (_controlledMob != null)
+            {
+                _controlledMob.OnDeath -= HandleMobDeath;
+                _controlledMob.Selected = false;
+            }
+
+
+            _controlledMob = value;
+            _controlledMob.Selected = true;
+            _controlledMob.OnDeath += HandleMobDeath;
+        }
+    }
 
     int enemyCount;
     public int EnemyCount
@@ -146,7 +163,7 @@ public class GameController : MonoBehaviour
 
         // spawn Robot
         Robot = Instantiate(_robotPrefab, Vector3.zero, Quaternion.identity);
-        _controlledMob = Robot;
+        ControlledMob = Robot;
 
         // Link ability handlers
         _flirtAbilityData.OnAbilityActivated += HandleFlirtActivation;
@@ -229,12 +246,7 @@ public class GameController : MonoBehaviour
                     Mob mob = hit.transform.gameObject.GetComponent<Mob>();
                     if (mob != null)
                     {
-                        _controlledMob = mob;
-
-                        // update mob destroyed handler
-                        if (_controlledMob != null)
-                            _controlledMob.OnDeath -= HandleMobDeath;
-                        _controlledMob.OnDeath += HandleMobDeath;
+                        ControlledMob = mob;
                     }
                 }
             }
@@ -256,12 +268,12 @@ public class GameController : MonoBehaviour
                 {
                     Vector3 position = hit.point;
 
-                    if (_controlledMob != null)
+                    if (ControlledMob != null)
                     {
                         // Instantiate prefab to display where controlledMob is moving to
                         Instantiate(_movementMarkerPrefab, position, Quaternion.identity);
 
-                        _controlledMob.MoveTo(position);
+                        ControlledMob.MoveTo(position);
                     }
                 }
             }
@@ -427,6 +439,6 @@ public class GameController : MonoBehaviour
 
     private void HandleMobDeath()
     {
-        _controlledMob = null;
+        ControlledMob = null;
     }
 }
