@@ -19,7 +19,9 @@ public class Tower : Mob
 
     private float _health = 0;
 
-    private Enemy target;
+    private Enemy _target = null;
+
+    private Material _material = null;
 
     public GameObject gun;
     public GameObject gunEffect;
@@ -92,6 +94,8 @@ public class Tower : Mob
         {
             _statLevels.Add(stat, 1);
         }
+
+        // _material = 
     }
 
     // Use this for initialization
@@ -151,13 +155,13 @@ public class Tower : Mob
         GameObject[] objs = GameObject.FindGameObjectsWithTag("Enemy");
 
         float bestDistance = CalculateFiringRange();
-        target = null;
+        _target = null;
         foreach (GameObject obj in objs)
         {
             float dist = Vector3.Distance(transform.position, obj.transform.position);
             if (dist < bestDistance)
             {
-                target = obj.GetComponent<Enemy>();
+                _target = obj.GetComponent<Enemy>();
                 bestDistance = dist;
             }
         }
@@ -197,10 +201,10 @@ public class Tower : Mob
     {
         RecalculateMaxHealth();
 
-        if (target != null && target.isAlive)
+        if (_target != null && _target.isAlive)
         {
-            // Turn towards target
-            Vector3 towardsTarget = target.transform.position - transform.position;
+            // Turn towards _target
+            Vector3 towardsTarget = _target.transform.position - transform.position;
             towardsTarget = new Vector3(towardsTarget.x, 0, towardsTarget.z);
             towardsTarget.Normalize();
             transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towardsTarget, Vector3.up), CalculateTurnSpeed() * Time.deltaTime);
@@ -208,8 +212,8 @@ public class Tower : Mob
             if (Vector3.Dot(towardsTarget, transform.forward) > 0.9)
             {
                 // TODO: reimplement gun targetting
-                // Aim gun at target
-                // Vector3 gunTowardsTarget = target.transform.position - gun.transform.position;
+                // Aim gun at _target
+                // Vector3 gunTowardsTarget = _target.transform.position - gun.transform.position;
                 // gunTowardsTarget.Normalize();
                 // gun.transform.rotation = Quaternion.RotateTowards(gun.transform.rotation, Quaternion.LookRotation(gunTowardsTarget, Vector3.up), CalculateTurnSpeed() * Time.deltaTime);
 
@@ -220,7 +224,7 @@ public class Tower : Mob
                 {
                     gunEffect.SetActive(true);
 
-                    target.TakeDamage(CalculateDPS() * Time.deltaTime);
+                    _target.TakeDamage(CalculateDPS() * Time.deltaTime);
                 }
                 else
                 {

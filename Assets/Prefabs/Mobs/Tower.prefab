@@ -67,6 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f2643de9931f1e41883377963304e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canBeControlled: 1
   _statDatas:
   - {fileID: 11400000, guid: 892b24120a1839045a93ad5e0fe09aba, type: 2}
   - {fileID: 11400000, guid: 338750a4ad0cb0f459dd3cd29dc22472, type: 2}
@@ -10124,7 +10125,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1559729675}
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -0, y: 0, z: 0}
+  m_LocalPosition: {x: 1.12, y: 1.92, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 353358792}
@@ -10147,7 +10148,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d790fc92f02209e41ad3d73a2542ec61, type: 3}
+  - {fileID: 2100000, guid: f799b66bb381d674485e9f6c6393e16f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
